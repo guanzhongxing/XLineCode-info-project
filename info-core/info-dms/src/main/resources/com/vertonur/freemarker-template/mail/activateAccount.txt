@@ -1,0 +1,14 @@
+Hi ${user.name}
+<br/>
+Someone, probably you, registered at ${forumName}<br/>
+Please use the following URL to complete the registration.<br/>
+<br/>
+<a href="${url}">Click here to activate...</a>
+<br/>
+If you prefer to enter this information manually, go to {manualUrl} and<br/>
+enter the following information:<br/>
+<br/>
+User ID: ${user.id}<br/>
+Auth code: ${activationKey}<br/>
+<br/>
+Remember: your username is: ${user.name}<br/>

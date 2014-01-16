@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!-- Level definition -->
+	<!-- Level_1:read department -->
+	<!-- ~~Level_2:write department -->
+	<!-- ~~Level_2:read category -->
+	<!-- ~~~~Level_3:download attachment -->
+	<!-- ~~~~Level_3:audit content(approve or reject new info/comment of a user) -->
+	<!-- ~~~~Level_3:moderate content -->
+	<!-- ~~~~~~Level_4:write category -->
+	<!-- ~~~~~~Level_4:remove content -->
+	<!-- ~~~~~~Level_4:edit content -->
+	<!-- ~~~~~~Level_4:move info -->
+	<!-- ~~~~~~Level_4:lock info -->
+	<!-- ~~~~~~~~Level_5:save info -->
+	<!-- ~~~~~~~~Level_5:save comment -->
+	<!-- ~~~~~~~~~~Level_6:upload attachment -->
+
+	<!-- common beans start -->
+	<bean id="saveEntityPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value="com\.vertonur\.dms\..*Service.*save.*" />
+	</bean>
+
+	<bean id="saveCategoryPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.CategoryService.saveCategory" />
+	</bean>
+
+	<bean id="readDeptPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="READ_DEPARTMENT_PERMISSION" />
+		<property name="description" value="Permission for reading department content" />
+		<property name="component" value="DEPARTMENT" />
+		<property name="type" value="READ_DEPARTMENT" />
+		<property name="level" value="Level_1" />
+	</bean>
+
+	<bean id="writeDeptPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="WRITE_DEPARTMENT_PERMISSION" />
+		<property name="description" value="Permission for writing department content" />
+		<property name="component" value="DEPARTMENT" />
+		<property name="type" value="WRITE_DEPARTMENT" />
+		<property name="level" value="Level_2" />
+	</bean>
+
+	<bean id="readCategoryPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="READ_CATEGORY_PERMISSION" />
+		<property name="description" value="Permission for reading category content" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="READ_CATEGORY" />
+		<property name="level" value="Level_2" />
+	</bean>
+
+	<bean id="writeCategoryPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="WRITE_CATEGORY_PERMISSION" />
+		<property name="description" value="Permission for writing category content" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="WRITE_CATEGORY" />
+		<property name="level" value="Level_4" />
+	</bean>
+
+	<bean id="auditContentPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="AUDIT_CATEGORY_PERMISSION" />
+		<property name="description"
+			value="Permission for approving or rejecting pending content of category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="AUDIT_CATEGORY" />
+		<property name="level" value="Level_3" />
+	</bean>
+
+	<bean id="moderateContentPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_MODERATE_CNT_PERMISSION" />
+		<property name="description"
+			value="Permission for editting or removing content of a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="MODERATE_CNT" />
+		<property name="level" value="Level_3" />
+	</bean>
+
+	<bean id="removeContentPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_REMOVE_CNT_PERMISSION" />
+		<property name="description"
+			value="Permission for removing content of a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="REMOVE_CNT" />
+		<property name="level" value="Level_4" />
+	</bean>
+
+	<bean id="editContentPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_EDIT_CNT_PERMISSION" />
+		<property name="description"
+			value="Permission for editting content of a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="EDIT_CNT" />
+		<property name="level" value="Level_4" />
+	</bean>
+
+	<bean id="moveInfoPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_MOVE_INFO_PERMISSION" />
+		<property name="description"
+			value="Permission for moving info between categories" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="MOVE_INFO" />
+		<property name="level" value="Level_4" />
+	</bean>
+
+	<bean id="infoLockPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_LOCK_INFO_PERMISSION" />
+		<property name="description" value="Permission for locking/unlocking info" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="INFO_LOCK" />
+		<property name="level" value="Level_4" />
+	</bean>
+
+	<bean id="saveCmtPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_SAVE_COMMENT_PERMISSION" />
+		<property name="description" value="Permission for saving comments of a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="SAVE_CMT" />
+		<property name="level" value="Level_5" />
+	</bean>
+
+	<bean id="saveInfoPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_SAVE_INFO_PERMISSION" />
+		<property name="description" value="Permission for saving infos of a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="SAVE_INFO" />
+		<property name="level" value="Level_5" />
+	</bean>
+
+	<bean id="uploadAttmPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_UPLOAD_ATTM_PERMISSION" />
+		<property name="description"
+			value="Permission for uploading attachments to a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="UPLOAD_ATTM" />
+		<property name="level" value="Level_6" />
+	</bean>
+
+	<bean id="downloadAttmPermissionTemplate" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CATEGORY_DOWNLOAD_ATTM_PERMISSION" />
+		<property name="description"
+			value="Permission for downloading attachments from a category" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="DOWNLOAD_ATTM" />
+		<property name="level" value="Level_3" />
+	</bean>
+	<!-- common beans end -->
+
+	<!-- department related start -->
+	<bean id="addDeptPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.AddRelatedPermissionAdvice"
+		scope="prototype">
+		<property name="groupService" ref="groupService" />
+		<property name="permissionTemplates">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="writeDeptPermissionTemplate" />
+			</set>
+		</property>
+
+		<property name="groupTemplates">
+			<list>
+				<ref bean="defaultGuestGroupTemplate" />
+				<ref bean="defaultUserGroupTemplate" />
+				<ref bean="defaultAdminGroupTemplate" />
+				<ref bean="superAdminGroupTemplate" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addDeptModerationPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.AddRelatedPermissionAdvice"
+		scope="prototype">
+		<property name="groupService" ref="groupService" />
+		<property name="permissionTemplates">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+			</set>
+		</property>
+
+		<property name="groupTemplates">
+			<list>
+				<ref bean="defaultModeratorGroupTemplate" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addDeptPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="addDeptPermissionAdvice" />
+		<property name="pointcut" ref="saveEntityPointcut" />
+	</bean>
+
+	<bean id="addDeptModerationPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="addDeptModerationPermissionAdvice" />
+		<property name="pointcut" ref="saveEntityPointcut" />
+	</bean>
+
+	<bean id="validateReadDeptPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.IdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateReadDeptPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateReadDeptPermissionDataSource" />
+	</bean>
+
+	<bean id="readDeptPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value=".*getDepartmentById" />
+	</bean>
+
+	<bean id="validateReadDeptPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateReadDeptPermissionAdvice" />
+		<property name="pointcut" ref="readDeptPointcut" />
+	</bean>
+
+
+	<bean id="filterOutDepartmentsAdvice"
+		class="com.vertonur.security.spring.aop.advice.DepartmentListFilterAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateReadDeptPermissionDataSource" />
+	</bean>
+
+	<bean id="getDepartmentsPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.DepartmentService.getDepartments" />
+	</bean>
+
+	<bean id="filterOutDepartmentsAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="filterOutDepartmentsAdvice" />
+		<property name="pointcut" ref="getDepartmentsPointcut" />
+	</bean>
+	<!-- department related end -->
+
+	<!-- category related start -->
+	<bean id="addCommonCategoryPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.AddRelatedPermissionAdvice"
+		scope="prototype">
+		<property name="groupService" ref="groupService" />
+		<property name="permissionTemplates">
+			<set>
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="writeCategoryPermissionTemplate" />
+				<ref bean="saveCmtPermissionTemplate" />
+			</set>
+		</property>
+
+		<property name="groupTemplates">
+			<list>
+				<ref bean="defaultGuestGroupTemplate" />
+				<ref bean="defaultUserGroupTemplate" />
+				<ref bean="defaultAdminGroupTemplate" />
+				<ref bean="superAdminGroupTemplate" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addCategoryPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.AddRelatedPermissionAdvice"
+		scope="prototype">
+		<property name="groupService" ref="groupService" />
+		<property name="permissionTemplates">
+			<set>
+				<ref bean="saveInfoPermissionTemplate" />
+				<ref bean="uploadAttmPermissionTemplate" />
+				<ref bean="downloadAttmPermissionTemplate" />
+			</set>
+		</property>
+
+		<property name="groupTemplates">
+			<list>
+				<ref bean="defaultUserGroupTemplate" />
+				<ref bean="defaultAdminGroupTemplate" />
+				<ref bean="superAdminGroupTemplate" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addCategoryModerationPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.AddRelatedPermissionAdvice"
+		scope="prototype">
+		<property name="groupService" ref="groupService" />
+		<property name="permissionTemplates">
+			<set>
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="auditContentPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="removeContentPermissionTemplate" />
+				<ref bean="editContentPermissionTemplate" />
+				<ref bean="moveInfoPermissionTemplate" />
+				<ref bean="infoLockPermissionTemplate" />
+			</set>
+		</property>
+
+		<property name="groupTemplates">
+			<list>
+				<ref bean="superAdminGroupTemplate" />
+				<ref bean="defaultModeratorGroupTemplate" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addCommonCategoryPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="addCommonCategoryPermissionAdvice" />
+		<property name="pointcut" ref="saveCategoryPointcut" />
+	</bean>
+
+	<bean id="addCategoryPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="addCategoryPermissionAdvice" />
+		<property name="pointcut" ref="saveCategoryPointcut" />
+	</bean>
+
+	<bean id="addCategoryModerationPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="addCategoryModerationPermissionAdvice" />
+		<property name="pointcut" ref="saveCategoryPointcut" />
+	</bean>
+
+	<bean id="validateReadCategoryPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.CategoryIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="1" />
+	</bean>
+
+	<bean id="validateReadCategoryPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateReadCategoryPermissionDataSource" />
+	</bean>
+
+	<bean id="readCategoryPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value=".*getCategoryById" />
+	</bean>
+
+	<bean id="validateReadCategoryPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateReadCategoryPermissionAdvice" />
+		<property name="pointcut" ref="readCategoryPointcut" />
+	</bean>
+
+	<bean id="filterOutCategoriesPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.IdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readCategoryPermissionTemplate" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="filterOutCategoriesAdvice"
+		class="com.vertonur.security.spring.aop.advice.CategoryListFilterAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="filterOutCategoriesPermissionDataSource" />
+	</bean>
+
+	<bean id="getDeptCategoriesPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.CategoryService.getDeptCategories" />
+	</bean>
+
+	<bean id="filterOutCategoriesAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="filterOutCategoriesAdvice" />
+		<property name="pointcut" ref="getDeptCategoriesPointcut" />
+	</bean>
+
+	<bean id="validateGetDeptCategoriesPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateReadDeptPermissionAdvice" />
+		<property name="pointcut" ref="getDeptCategoriesPointcut" />
+	</bean>
+	<!-- category related end -->
+
+	<!-- info service related start -->
+	<bean id="validateSaveCmtPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.ContentPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="writeDeptPermissionTemplate" />
+				<ref bean="writeCategoryPermissionTemplate" />
+				<ref bean="saveCmtPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateSaveCmtPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateSaveCmtPermissionDataSource" />
+	</bean>
+
+	<bean id="saveCmtPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService.saveComment" />
+	</bean>
+
+	<bean id="validateSaveCmtPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateSaveCmtPermissionAdvice" />
+		<property name="pointcut" ref="saveCmtPointcut" />
+	</bean>
+
+	<!-- info related start -->
+	<bean id="validateSaveInfoPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.ContentPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="writeDeptPermissionTemplate" />
+				<ref bean="writeCategoryPermissionTemplate" />
+				<ref bean="saveInfoPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateSaveInfoPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateSaveInfoPermissionDataSource" />
+	</bean>
+
+	<bean id="saveInfoPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService.saveInfo" />
+	</bean>
+
+	<bean id="validateSaveInfoPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateSaveInfoPermissionAdvice" />
+		<property name="pointcut" ref="saveInfoPointcut" />
+	</bean>
+	<!-- info related end -->
+
+	<!-- attachment related start -->
+	<bean id="validateUploadAttmPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.AttachmentPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="writeDeptPermissionTemplate" />
+				<ref bean="writeCategoryPermissionTemplate" />
+				<ref bean="downloadAttmPermissionTemplate" />
+				<ref bean="uploadAttmPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateUploadAttmPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateUploadAttmPermissionDataSource" />
+	</bean>
+
+	<bean id="saveAttmPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.AttachmentService.confirmAttachmentUpload" />
+	</bean>
+
+	<bean id="validateUploadAttmPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateUploadAttmPermissionAdvice" />
+		<property name="pointcut" ref="saveAttmPointcut" />
+	</bean>
+
+	<bean id="validateDownloadAttmPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.AttachmentIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="downloadAttmPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateDownloadAttmPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateDownloadAttmPermissionDataSource" />
+	</bean>
+
+	<bean id="downloadAttmPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.AttachmentService.downloadAttachment" />
+	</bean>
+
+	<bean id="validateDownloadAttmPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateDownloadAttmPermissionAdvice" />
+		<property name="pointcut" ref="downloadAttmPointcut" />
+	</bean>
+	<!-- attachment related end -->
+
+	<!-- moderation related start -->
+	<bean id="validateAuditInfoPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.PendingInfoIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="auditContentPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateAuditInfoPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateAuditInfoPermissionDataSource" />
+	</bean>
+
+	<bean id="auditInfoPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.(approve|reject)Info" />
+	</bean>
+
+	<bean id="validateAuditInfoPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateAuditInfoPermissionAdvice" />
+		<property name="pointcut" ref="auditInfoPointcut" />
+	</bean>
+
+	<bean id="validateAuditCmtPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.PendingCommentIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="auditContentPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateAuditCmtPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateAuditCmtPermissionDataSource" />
+	</bean>
+
+	<bean id="auditCmtPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.(approve|reject)Comment" />
+	</bean>
+
+	<bean id="validateAuditCmtPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateAuditCmtPermissionAdvice" />
+		<property name="pointcut" ref="auditCmtPointcut" />
+	</bean>
+
+	<bean id="validateModifyContentPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.ContentPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="editContentPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="1" />
+	</bean>
+
+	<bean id="validateModifyContentPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateModifyContentPermissionDataSource" />
+	</bean>
+
+	<bean id="modifyContentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.modifyContent" />
+	</bean>
+
+	<bean id="validateModifyContentPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateModifyContentPermissionAdvice" />
+		<property name="pointcut" ref="modifyContentPointcut" />
+	</bean>
+
+	<bean id="validateDeleteInfoPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.InfoIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="removeContentPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateDeleteInfoPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateDeleteInfoPermissionDataSource" />
+	</bean>
+
+	<bean id="deleteInfoPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.deleteInfo" />
+	</bean>
+
+	<bean id="validateDeleteInfoPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateDeleteInfoPermissionAdvice" />
+		<property name="pointcut" ref="deleteInfoPointcut" />
+	</bean>
+
+	<bean id="validateDeleteCmtPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.CommentIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="removeContentPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateDeleteCmtPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateDeleteCmtPermissionDataSource" />
+	</bean>
+
+	<bean id="deleteCmtPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.deleteComment" />
+	</bean>
+
+	<bean id="validateDeleteCmtPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateDeleteCmtPermissionAdvice" />
+		<property name="pointcut" ref="deleteCmtPointcut" />
+	</bean>
+
+	<bean id="validateMoveInfoPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.InfoIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="moveInfoPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateMoveInfoPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateMoveInfoPermissionDataSource" />
+	</bean>
+
+	<bean id="moveInfoPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.moveInfo" />
+	</bean>
+
+	<bean id="validateMoveInfoPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateMoveInfoPermissionAdvice" />
+		<property name="pointcut" ref="moveInfoPointcut" />
+	</bean>
+
+	<bean id="validateInfoLockPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.InfoIdPermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="readDeptPermissionTemplate" />
+				<ref bean="readCategoryPermissionTemplate" />
+				<ref bean="moderateContentPermissionTemplate" />
+				<ref bean="infoLockPermissionTemplate" />
+			</set>
+		</property>
+		<property name="paramIndex" value="0" />
+	</bean>
+
+	<bean id="validateInfoLockPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateInfoLockPermissionDataSource" />
+	</bean>
+
+	<bean id="infoLockPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.(lock|unlock)Info" />
+	</bean>
+
+	<bean id="validateInfoLockPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateInfoLockPermissionAdvice" />
+		<property name="pointcut" ref="infoLockPointcut" />
+	</bean>
+	<!-- moderation related end -->
+
+	<bean id="validateAuthorContentEditionRightAdvice"
+		class="com.vertonur.security.spring.aop.advice.AuthorContentEditionRightValidationAdvice"
+		scope="prototype">
+	</bean>
+
+	<bean id="updateContentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.ModerationService\.update(Info|Comment)" />
+	</bean>
+
+	<bean id="validateAuthorContentEditionRightAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateAuthorContentEditionRightAdvice" />
+		<property name="pointcut" ref="updateContentPointcut" />
+	</bean>
+
+	<bean id="validateInfoProprietaryAdvice"
+		class="com.vertonur.security.spring.aop.advice.ValidateInfoProprietaryAdvice"
+		scope="prototype">
+	</bean>
+
+	<bean id="infoServiceInfoLockPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.InfoService\.(lock|unlock)Info" />
+	</bean>
+
+	<bean id="validateInfoProprietaryAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateInfoProprietaryAdvice" />
+		<property name="pointcut" ref="infoServiceInfoLockPointcut" />
+	</bean>
+</beans>

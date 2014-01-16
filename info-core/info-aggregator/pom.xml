@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vertonur</groupId>
+	<artifactId>info-aggregator</artifactId>
+	<name>aggregrator</name>
+	<version>0.9.3</version>
+	<packaging>pom</packaging>
+
+	<description>A project that used to configure eclipse setting of dependency projects using maven eclipse plugin</description>
+	<modules>
+		<module>../info-test-toolkit</module>
+		<module>../info-utilities</module>
+		<module>../info-object-model</module>
+		<module>../info-dao-api</module>
+		<module>../info-dao-hb</module>
+		<module>../info-dms</module>
+		<module>../info-security</module>
+		<module>../info-ext-ranking</module>
+		<module>../info-context</module>
+	</modules>
+
+	<distributionManagement>
+		<repository>
+			<id>info_releases</id>
+			<layout>default</layout>
+			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

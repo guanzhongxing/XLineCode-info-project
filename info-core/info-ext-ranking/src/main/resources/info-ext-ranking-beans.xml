@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<bean class="com.vertonur.ext.ranking.RankingExtensionInitializer"
+		init-method="init">
+		<property name="defaultCmtPoints" value="1" />
+		<property name="defaultInfoPoints" value="2" />
+		<property name="defaultUploadAttmPoints" value="3" />
+	</bean>
+
+	<bean id="rankingServiceTarget" class="com.vertonur.ext.ranking.service.RankingServiceImpl"
+		scope="prototype">
+		<constructor-arg value="com.vertonur.ext.ranking.dao.RankingHibernateDAO" />
+	</bean>
+
+	<bean id="rankingService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="rankingServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>validateOperateRankingPermissionAdvisor</value>
+				<value>validateConfigPointsPermissionAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.ext.ranking.service.RankingService" />
+	</bean>
+
+	<import resource="info-ext-ranking-aop-beans.xml" />
+</beans>

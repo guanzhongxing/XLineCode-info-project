@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>info-parent</artifactId>
+		<groupId>com.vertonur</groupId>
+		<version>0.9.3</version>
+	</parent>
+	<artifactId>info-context</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-object-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-dao-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-dao-hb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-dms</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-ext-ranking</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<!-- testing related -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javaee</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-test-toolkit</artifactId>
+		</dependency>
+		<!-- testing related end -->
+	</dependencies>
+</project>

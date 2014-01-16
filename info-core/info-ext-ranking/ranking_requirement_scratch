@@ -1,0 +1,107 @@
+Business concepts:
+1.	users -->  points  <-- ranking
+2.	ranking  --> points  --> group
+3.	info, cmt, attachment --> points config
+
+Architect view:
+1.	ranking  --> ranking dao  --> ranking service
+2.	ranking point cut , ranking advice  --> ranking advisor  --> save info,cmt ,etc  --> points config  --> increase points
+		--> check user points with next level ranking  --> upgrade user group
+
+Configuration support:	
+1.	add advisors to info-context --> get related proxy service from info-context  --> check if ranking extention is enabled
+	--> get advisor chain of ranking extention context
+		 -->  add those advisor to proxy service through addAdvisor method of ProxyFactoryBean
+2.	add those extended beans to related orm context
+
+Business logic:
+1.	delete ranking  
+		--> get previous lv ranking,time ranking and  next lv ranking,time ranking
+			--> if any of the next lv ranking exists(condition A) ,
+				--> assign all related user to this ranking
+				--> add groups of this ranking to those users
+					--> if condition A failed and any of the previous lv ranking exists(condition B), assign all related user to this ranking 
+					--> if condition B failed, release all related users ranking relationship 
+		-->  delete ranking
+		(note: all the processes must occur in midnight for performance issue)
+
+2.	save ranking
+		--> check to see if there is any ranking with points equals to the new ranking(ranking N), if exists, the ranking is illegal
+		--> find the greatest ranking(ranking A) with points lesser than this ranking with desc order and with the same ranking type as ranking N  
+			--> if found
+				--> get all users by the found ranking
+					--> checks all users' points with the new ranking
+						--> upgrade users to ranking N if their points greater than or equal to points of ranking N
+						--> add groups of ranking N to those users
+				--> get the next lv ranking(ranking B) of ranking A and (steps hereby are reusable)
+				-->	assign ranking N to the next lv ranking of ranking A,
+				-->	set the previous lv ranking of ranking N to ranking A,
+				-->	assign ranking N to the previous lv ranking of ranking B,
+				-->	and assign ranking B to the next lv ranking of ranking N
+			--> if not found
+				--> find the least ranking(ranking A) with points greater than this ranking with asc order					
+					--> if found						
+						--> get all users with points greater than or equal to ranking N and lesser than ranking A
+							--> upgrade those users to ranking N
+							--> add groups of ranking N to those users
+							--> assign ranking A to the next lv ranking of ranking N
+							--> assign ranking N to the previous lv ranking of ranking A
+					--> if not found
+						--> get all users with points greater than or equal to ranking N
+							--> upgrade those users to ranking N
+							--> add groups of ranking N to those users
+
+	(note: all the processes except saving must occur in midnight for performance issue)
+
+3.	update ranking 
+		--> check to see if there is any ranking with points equals to this updated ranking(ranking C),except for ranking C
+			if exists, the ranking is illegal
+		--> find the greatest ranking(ranking A) with points lesser than ranking C with desc order and with the same ranking type as ranking C  
+			--> if found
+				--> get the next lv ranking(ranking B) of ranking A
+					--> if ranking B isn't ranking C
+						(reusable code block)
+						--> get the next lv ranking(ranking D) of ranking C
+							--> if ranking D is not null
+								--> assign the users with ranking C to ranking D, 
+									--> add groups of ranking D to those users 
+							--> if ranking D is null
+								--> assign the users with ranking C to the previous lv ranking
+						--> remove ranking C from the current ranking chain
+						(reusable code block end)
+						-->	assign ranking C to the next lv ranking of ranking A,
+						-->	set the previous lv ranking of ranking C to ranking A,
+						-->	assign ranking C to the previous lv ranking of ranking B,
+						-->	assign ranking B to the next lv ranking of ranking C
+					--> if it's the same
+						--> just update ranking C
+			--> if not found
+				--> find the least ranking(ranking A) with points greater than ranking C with asc order					
+					--> if found
+						--> if ranking A isn't ranking C
+							(reusable code block)
+							--> get the next lv ranking(ranking D) of ranking C
+								--> if ranking D is not null								
+									--> assign the users with ranking C to ranking D, 
+										--> add groups of ranking D to those users 								
+								--> if ranking D is null
+									--> assign the users with ranking C to the previous lv ranking 
+							--> remove ranking C from the current ranking chain
+							(reusable code block end)
+
+							--> assign null to the previous lv ranking of ranking C
+							--> assign ranking A to the next lv ranking of ranking C							
+							--> assign ranking C to the previous lv ranking of ranking A
+						--> if it's the same
+							--> just update ranking C
+					--> if not found
+						--> just update ranking C
+	(note: all the processes must occur in midnight for performance issue)
+			
+4.	actions watched by ranking advisor
+		--> find the related ranking points config by the action occurs
+			--> increase points of the login user according to the respective action points config
+				--> check points of the user against with the points of the next lv ranking(ranking A) of the ranking of the user 
+					--> if the points greater than or equal to the points of ranking A ,update the user with ranking A,otherwise do nothing
+		
+					

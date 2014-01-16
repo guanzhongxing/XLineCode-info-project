@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!-- Group templates must be prototype as they are used many times to find 
+		the corresponding one in database, so it's necessary to keep their state 
+		original in the container of spring -->
+	<bean id="defaultGuestGroupTemplate" class="com.vertonur.pojo.security.Group"
+		scope="prototype">
+		<property name="nestedLevel" value="0" />
+		<property name="name" value="${info_installer_bean_grp_gst_name}" />
+		<property name="groupType" value="GENERIC_GST" />
+		<property name="description" value="${info_installer_bean_grp_gst_desc}" />
+		<property name="deletable" value="false" />
+	</bean>
+
+	<bean id="defaultUserGroupTemplate" class="com.vertonur.pojo.security.Group"
+		scope="prototype">
+		<property name="nestedLevel" value="0" />
+		<property name="name" value="${info_installer_bean_grp_usr_name}" />
+		<property name="groupType" value="GENERIC_USR" />
+		<property name="description" value="${info_installer_bean_grp_usr_desc}" />
+		<property name="deletable" value="false" />
+	</bean>
+
+	<bean id="defaultAdminGroupTemplate" class="com.vertonur.pojo.security.Group"
+		scope="prototype">
+		<property name="nestedLevel" value="1" />
+		<property name="name" value="${info_installer_bean_grp_admin_name}" />
+		<property name="groupType" value="GENERIC_ADMIN" />
+		<property name="description" value="${info_installer_bean_grp_admin_desc}" />
+		<property name="deletable" value="false" />
+	</bean>
+
+	<bean id="superAdminGroupTemplate" class="com.vertonur.pojo.security.Group"
+		scope="prototype">
+		<property name="nestedLevel" value="0" />
+		<property name="name" value="${info_installer_bean_grp_spr_admin_name}" />
+		<property name="groupType" value="SUPER_ADMIN" />
+		<property name="description" value="${info_installer_bean_grp_spr_admin_desc}" />
+		<property name="deletable" value="false" />
+		<property name="editable" value="false" />
+	</bean>
+
+	<bean id="defaultModeratorGroupTemplate" class="com.vertonur.pojo.security.Group"
+		scope="prototype">
+		<property name="nestedLevel" value="0" />
+		<property name="name" value="${info_installer_bean_grp_mdr_name}" />
+		<property name="groupType" value="GENERIC_MDR" />
+		<property name="description" value="${info_installer_bean_grp_mdr_desc}" />
+		<property name="deletable" value="false" />
+	</bean>
+
+	<bean id="authorityInitializer" class="com.vertonur.context.AuthorityInitializer">
+		<property name="defaultGuestGroupTemplate" ref="defaultGuestGroupTemplate" />
+		<property name="defaultUserGroupTemplate" ref="defaultUserGroupTemplate" />
+		<property name="defaultAdminGroupTemplate" ref="defaultAdminGroupTemplate" />
+		<property name="superAdminGroupTemplate" ref="superAdminGroupTemplate" />
+		<property name="defaultModeratorGroupTemplate" ref="defaultModeratorGroupTemplate" />
+	</bean>
+
+	<bean id="attachmentInfo" class="com.vertonur.pojo.AttachmentInfo">
+		<property name="realFilename" value="defaultAvatar.jpeg" />
+		<property name="physicalFilename" value="/upload/avatar/defaultAvatar.jpeg" />
+		<property name="downloadUrl" value="/upload/avatar/defaultAvatar.jpeg" />
+		<property name="mimeType" value="image/jpeg" />
+		<property name="uploadConfirmed" value="true" />
+		<property name="attachmentType" value="LOCAL" />
+	</bean>
+
+	<bean id="superAdmin" class="com.vertonur.pojo.Admin">
+		<property name="name" value="${info_installer_bean_admin_name}" />
+		<property name="password" value="12345" />
+		<property name="gender" value="0" />
+		<property name="signature" value="${info_installer_bean_admin_sig}" />
+		<property name="email" value="sunimisoul@163.com" />
+		<property name="attmEnabled" value="true" />
+		<property name="canDownloadAttms" value="true" />
+		<property name="activated" value="true" />
+	</bean>
+
+	<bean id="guest" class="com.vertonur.pojo.User">
+		<property name="name" value="${info_installer_bean_guest_name}" />
+		<property name="password" value="12345" />
+		<property name="email" value="guest@xlinecode.com" />
+		<property name="gender" value="0" />
+		<property name="signature" value="${info_installer_bean_guest_sig}" />
+		<property name="attmEnabled" value="false" />
+		<property name="canDownloadAttms" value="true" />
+		<property name="activated" value="true" />
+	</bean>
+
+	<bean id="moderator" class="com.vertonur.pojo.Moderator">
+		<property name="name" value="${info_installer_bean_mdr_name}" />
+		<property name="password" value="12345" />
+		<property name="email" value="moderator@xlinecode.com" />
+		<property name="gender" value="0" />
+		<property name="signature" value="${info_installer_bean_mdr_sig}" />
+		<property name="attmEnabled" value="false" />
+		<property name="canDownloadAttms" value="true" />
+		<property name="activated" value="true" />
+	</bean>
+
+	<bean id="systemDataInitializer" class="com.vertonur.context.SystemDataInitializer">
+		<property name="attachmentInfo" ref="attachmentInfo" />
+		<property name="guest" ref="guest" />
+		<property name="superAdmin" ref="superAdmin" />
+		<property name="moderator" ref="moderator" />
+		<property name="authorityInitializer" ref="authorityInitializer" />
+		<property name="runtimeParameterInitializer" ref="runtimeParameterInitializer" />
+		<property name="backendPermissionInitializer" ref="backendPermissionInitializer" />
+	</bean>
+
+	<bean id="backendPermissionInitializer" class="com.vertonur.context.BackendPermissionInitializer">
+		<property name="permissions">
+			<set>
+				<ref bean="operateGroupPermission" />
+				<ref bean="operateUserPermissoin" />
+				<ref bean="operateDepartmentPermission" />
+				<ref bean="operateCategoryPermission" />
+				<ref bean="operateRankingPermission" />
+				<ref bean="configPointsPermission" />
+				<ref bean="configRuntimeParameterPermission" />
+				<ref bean="configBackendPermissionPermission" />
+			</set>
+		</property>
+		<property name="groupTemplates">
+			<set>
+				<ref bean="superAdminGroupTemplate" />
+			</set>
+		</property>
+	</bean>
+</beans>

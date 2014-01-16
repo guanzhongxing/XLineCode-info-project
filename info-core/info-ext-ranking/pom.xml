@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>info-parent</artifactId>
+		<groupId>com.vertonur</groupId>
+		<version>0.9.3</version>
+	</parent>
+	<artifactId>info-ext-ranking</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>javaee</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-dao-hb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-dms</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vertonur</groupId>
+			<artifactId>info-security</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
+</project>

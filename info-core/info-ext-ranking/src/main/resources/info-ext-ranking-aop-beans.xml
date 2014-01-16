@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<bean id="increaseSaveInfoPointsAdvice"
+		class="com.vertonur.ext.ranking.spring.aop.IncreasePointsAdvice"
+		scope="prototype">
+		<property name="increaseType" value="INFO" />
+		<property name="daoImplClass"
+			value="com.vertonur.ext.ranking.dao.RankingHibernateDAO" />
+	</bean>
+
+	<bean id="increaseSaveInfoPointsAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="increaseSaveInfoPointsAdvice" />
+		<property name="pointcut" ref="saveInfoPointcut" />
+	</bean>
+
+	<bean id="increaseSaveCmtPointsAdvice"
+		class="com.vertonur.ext.ranking.spring.aop.IncreasePointsAdvice"
+		scope="prototype">
+		<property name="increaseType" value="CMT" />
+		<property name="daoImplClass"
+			value="com.vertonur.ext.ranking.dao.RankingHibernateDAO" />
+	</bean>
+
+	<bean id="increaseSaveCmtPointsAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="increaseSaveCmtPointsAdvice" />
+		<property name="pointcut" ref="saveCmtPointcut" />
+	</bean>
+
+	<bean id="increaseUploadAttmPointsAdvice"
+		class="com.vertonur.ext.ranking.spring.aop.IncreasePointsAdvice"
+		scope="prototype">
+		<property name="increaseType" value="ATTM" />
+		<property name="daoImplClass"
+			value="com.vertonur.ext.ranking.dao.RankingHibernateDAO" />
+	</bean>
+
+	<bean id="increaseUploadAttmPointsAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="increaseUploadAttmPointsAdvice" />
+		<property name="pointcut" ref="saveAttmPointcut" />
+	</bean>
+
+	<bean id="operateRankingPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="OPERATE_RANKING_PERMISSION" />
+		<property name="description"
+			value="Permission for creating,updating and deleting rankings" />
+		<property name="component" value="RANKING" />
+		<property name="type" value="OPERATE_RANKING" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateRankingPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateRankingPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateRankingPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateOperateRankingPermissionDataSource" />
+	</bean>
+
+	<bean id="operateRankingPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.ext\.ranking\.service\.RankingService\.(save|update|delete)Ranking" />
+	</bean>
+
+	<bean id="validateOperateRankingPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateOperateRankingPermissionAdvice" />
+		<property name="pointcut" ref="operateRankingPointcut" />
+	</bean>
+
+	<bean id="configPointsPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CONFIG_POINTS_PERMISSION" />
+		<property name="description" value="Permission for configuring user point" />
+		<property name="component" value="RANKING" />
+		<property name="type" value="CONFIG_POINTS" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateConfigPointsPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="configPointsPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateConfigPointsPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateConfigPointsPermissionDataSource" />
+	</bean>
+
+	<bean id="configPointsPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.ext\.ranking\.service\.RankingService\.updatePointConfig" />
+	</bean>
+
+	<bean id="validateConfigPointsPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateConfigPointsPermissionAdvice" />
+		<property name="pointcut" ref="configPointsPointcut" />
+	</bean>
+</beans>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:i18n/ClassResources_zh.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="attachmentServiceTarget" class="com.vertonur.dms.AttachmentServiceImpl"
+		scope="prototype" />
+	<bean id="categoryServiceTarget" class="com.vertonur.dms.CategoryServiceImpl"
+		scope="prototype" />
+	<bean id="departmentServiceTarget" class="com.vertonur.dms.DepartmentServiceImpl"
+		scope="prototype" />
+	<bean id="fileService" class="com.vertonur.dms.FileService" scope="prototype" />
+	<bean id="infoServiceTarget" class="com.vertonur.dms.InfoServiceImpl"
+		scope="prototype" />
+	<bean id="systemService" class="com.vertonur.dms.SystemService"
+		scope="prototype" />
+	<bean id="userServiceTarget" class="com.vertonur.dms.UserServiceImpl"
+		scope="prototype">
+		<property name="passwordEncoder" ref="passwordEncoder" />
+	</bean>
+	<bean id="groupServiceTarget" class="com.vertonur.dms.GroupServiceImpl"
+		scope="prototype" />
+	<bean id="roleService" class="com.vertonur.dms.RoleService" scope="prototype" />
+	<bean id="permissionService" class="com.vertonur.dms.PermissionService"
+		scope="prototype" />
+	<bean id="moderationServiceTarget" class="com.vertonur.dms.ModerationServiceImpl"
+		scope="prototype" />
+	<bean id="runtimeParameterServiceTarget" class="com.vertonur.dms.RuntimeParameterServiceImpl"
+		scope="prototype" />
+
+	<bean id="mailService" class="com.vertonur.dms.MailService">
+		<property name="newCmtNotificationFile" value="mail/mailNewReply.txt" />
+		<property name="newCmtNotificationSubject" value="Message posted: {0}" />
+		<property name="newPmNotificationFile" value="mail/newPrivateMessage.txt" />
+		<property name="newPmNotificationSubject" value="Private Message" />
+		<property name="activateAcctNotificationFile" value="mail/activateAccount.txt" />
+		<property name="activateAcctNotificationSubject" value="Activate forum account" />
+		<property name="recoverPwdNotificationFile" value="mail/lostPassword.txt" />
+		<property name="recoverPwdNotificationSubject" value="Password recovery" />
+	</bean>
+	<bean id="templateService" class="com.vertonur.dms.TemplateService"
+		factory-method="getService" />
+
+	<bean id="departmentService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="departmentServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>addDeptPermissionAdvisor</value>
+				<value>addDeptModerationPermissionAdvisor</value>
+				<value>validateReadDeptPermissionAdvisor</value>
+				<value>validateOperateDepartmentPermissionAdvisor</value>
+				<value>filterOutDepartmentsAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.DepartmentService" />
+	</bean>
+
+	<bean id="categoryService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="categoryServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>addCommonCategoryPermissionAdvisor</value>
+				<value>addCategoryPermissionAdvisor</value>
+				<value>addCategoryModerationPermissionAdvisor</value>
+				<value>validateReadCategoryPermissionAdvisor</value>
+				<value>validateGetDeptCategoriesPermissionAdvisor</value>
+				<value>validateOperateCategoryPermissionAdvisor</value>
+				<value>filterOutCategoriesAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.CategoryService" />
+	</bean>
+
+	<bean id="attachmentService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="attachmentServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>validateUploadAttmPermissionAdvisor</value>
+				<value>validateDownloadAttmPermissionAdvisor</value>
+				<value>increaseUploadAttmPointsAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.AttachmentService" />
+	</bean>
+
+	<bean id="activateUserAdvice"
+		class="com.vertonur.context.spring.aop.advice.ActivateUserAdvice"
+		scope="prototype" />
+
+	<bean id="activateUserPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value="com\.vertonur\.dms\.UserService.activateUser" />
+	</bean>
+
+	<bean id="activateUserAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="activateUserAdvice" />
+		<property name="pointcut" ref="activateUserPointcut" />
+	</bean>
+
+	<bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="userServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>activateUserAdvisor</value>
+				<value>validateOperateUserPermissoinAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.UserService" />
+	</bean>
+	
+	<bean id="infoService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="infoServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>validateInfoProprietaryAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.InfoService" />
+	</bean>
+
+	<bean id="moderationService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="moderationServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>validateSaveCmtPermissionAdvisor</value>
+				<value>validateSaveInfoPermissionAdvisor</value>
+				<value>increaseSaveCmtPointsAdvisor</value>
+				<value>increaseSaveInfoPointsAdvisor</value>
+				<value>validateAuditInfoPermissionAdvisor</value>
+				<value>validateAuditCmtPermissionAdvisor</value>
+				<value>validateModifyContentPermissionAdvisor</value>
+				<value>validateDeleteInfoPermissionAdvisor</value>
+				<value>validateDeleteCmtPermissionAdvisor</value>
+				<value>validateAuthorContentEditionRightAdvisor</value>
+				<value>validateMoveInfoPermissionAdvisor</value>
+				<value>validateInfoLockPermissionAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.ModerationService" />
+	</bean>
+
+	<bean id="groupService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="groupServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>validateOperateGroupPermissionAdvisor</value>
+				<value>validateBackendPermissionAssignmentAdvisor</value>
+				<value>validateConfigBackendPermissionPermissionAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.GroupService" />
+	</bean>
+
+	<bean id="updateSessionTimeoutConfigAdvice"
+		class="com.vertonur.context.spring.aop.advice.UpdateSessionTimeoutConfigAdvice" />
+
+	<bean id="updateSessionTimeoutConfigPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.RuntimeParameterService\.updateSystemContextConfig" />
+	</bean>
+
+	<bean id="updateSessionTimeoutConfigAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="updateSessionTimeoutConfigAdvice" />
+		<property name="pointcut" ref="updateSessionTimeoutConfigPointcut" />
+	</bean>
+
+	<bean id="runtimeParameterService" class="org.springframework.aop.framework.ProxyFactoryBean"
+		scope="prototype">
+		<property name="target" ref="runtimeParameterServiceTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>updateSessionTimeoutConfigAdvisor</value>
+				<value>validateConfigRuntimeParameterPermissionAdvisor</value>
+			</list>
+		</property>
+		<property name="proxyInterfaces" value="com.vertonur.dms.RuntimeParameterService" />
+	</bean>
+
+	<import resource="info-config-beans.xml" />
+	<import resource="info-context-installer-beans.xml" />
+	<import resource="classpath:info-security-permission-aop-beans.xml" />
+	<import resource="classpath:info-security-permission-aop-beans-backend.xml" />
+	<import resource="classpath:info-security-config-beans.xml" />
+</beans>

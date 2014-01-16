@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<bean id="runtimeParameterInitializer" class="com.vertonur.context.RuntimeParameterInitializer">
+		<property name="infoConfig" ref="infoConfig" />
+		<property name="commentConfig" ref="commentConfig" />
+		<property name="privateMessageConfig" ref="privateMessageConfig" />
+		<property name="systemContextConfig" ref="systemContextConfig" />
+		<property name="userConfig" ref="userConfig" />
+		<property name="attachmentConfig" ref="attachmentConfig" />
+		<property name="emailConfig" ref="emailConfig" />
+		<property name="moderationConfig" ref="moderationConfig" />
+	</bean>
+
+	<bean id="infoConfig" class="com.vertonur.pojo.config.InfoConfig">
+		<property name="infoPgnOffset" value="15" />
+		<property name="newInfoInHours" value="1" />
+		<property name="newInfoInterval" value="3000" />
+		<property name="hottestInfoGeCmts" value="15" />
+		<property name="hottestInfoPgnOffset" value="15" />
+		<property name="recentInfoInDays" value="3" />
+		<property name="recentInfoPgnOffset" value="15" />
+		<property name="usrSpfdInfoPgnOffset" value="15" />
+		<property name="categoryInfoCacheNum" value="15" />
+	</bean>
+
+	<bean id="commentConfig" class="com.vertonur.pojo.config.CommentConfig">
+		<property name="cmtPgnOffset" value="15" />
+		<property name="newCmtInterval" value="3000" />
+		<property name="usrSpfdCmtPgnOffset" value="15" />
+	</bean>
+
+	<bean id="privateMessageConfig" class="com.vertonur.pojo.config.PrivateMsgConfig">
+		<property name="privateMsgPgnOffset" value="15" />
+		<property name="newPrivateMsgNum" value="3" />
+		<property name="newPrivateMsgInDays" value="1" />
+	</bean>
+
+	<bean id="systemContextConfig" class="com.vertonur.pojo.config.SystemContextConfig">
+		<property name="checkAcctActivationSessionDelay" value="300" />
+		<property name="checkUserSessionDelay" value="300" />
+		<property name="threadPoolSize" value="10" />
+		<property name="sessionTiming" value="600" />
+		<property name="loginSessionTiming" value="1800" />
+		<property name="acctActivationSessionTiming" value="86400" />
+	</bean>
+
+	<bean id="userConfig" class="com.vertonur.pojo.config.UserConfig">
+		<property name="usrPgnOffset" value="15" />
+		<property name="requireNewUserAuthEmail" value="false" />
+		<property name="notifyAuthorOnNewCmt" value="true" />
+		<property name="avatarWidth" value="150" />
+		<property name="avatarHeight" value="150" />
+		<property name="avatarSize" value="1024" />
+		<property name="registrationEnabled" value="true" />
+	</bean>
+
+	<bean id="attachmentConfig" class="com.vertonur.pojo.config.AttachmentConfig">
+		<property name="maxAttmtNum" value="1" />
+		<property name="maxSize" value="10485760" />
+		<property name="attmtEnabled" value="true" />
+		<property name="downloadEnabled" value="true" />
+		<property name="thumbWidth" value="400" />
+		<property name="thumbHeight" value="400" />
+		<property name="thumbEnabled" value="true" />
+		<property name="configTyp" value="SYS" />
+	</bean>
+
+	<bean id="emailConfig" class="com.vertonur.pojo.config.EmailConfig">
+		<property name="sender" value="sunimisoul@163.com" />
+		<property name="smtpHost" value="smtp.163.com" />
+		<property name="smtpPort" value="25" />
+		<property name="smtpSSLPort" value="465" />
+		<property name="requireAuth" value="true" />
+		<property name="requireSSL" value="false" />
+		<property name="smtpUsername" value="sunimisoul" />
+		<property name="smtpPwd" value="abc" />
+		<property name="emailFormat" value="html" />
+	</bean>
+
+	<bean id="moderationConfig" class="com.vertonur.pojo.config.ModerationConfig">
+		<property name="mdrLgPgnOffset" value="15" />
+		<property name="digestionNum" value="30" />
+		<property name="assignPendingLogInterval" value="1200" />
+		<property name="threadPoolSize" value="3" />
+	</bean>
+</beans>

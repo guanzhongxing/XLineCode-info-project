@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!-- Level definition -->
+	<!-- Admin related -->
+	<!-- Level_1:operate group -->
+	<!-- Level_1:operate user -->
+	<!-- Level_1:operate department -->
+	<!-- Level_1:operate category -->
+	<!-- Level_1:operate ranking -->
+	<!-- Level_1:config user point -->
+	<!-- Level_1:config runtime parameter -->
+
+	<!-- common beans start -->
+	<bean id="operateGroupPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="OPERATE_GROUP_PERMISSION" />
+		<property name="description"
+			value="Permission for creating,updating and deleting groups" />
+		<property name="component" value="GROUP" />
+		<property name="type" value="OPERATE_GROUP" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="operateUserPermissoin" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="OPERATE_USER_PERMISSION" />
+		<property name="description"
+			value="Permission for creating,updating and deleting users" />
+		<property name="component" value="USER" />
+		<property name="type" value="OPERATE_USER" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="operateDepartmentPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="OPERATE_DEPARTMENT_PERMISSION" />
+		<property name="description"
+			value="Permission for creating,updating and deleting departments" />
+		<property name="component" value="DEPARTMENT" />
+		<property name="type" value="OPERATE_DEPARTMENT" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="operateCategoryPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="OPERATE_CATEGORY_PERMISSION" />
+		<property name="description"
+			value="Permission for creating,updating and deleting categories" />
+		<property name="component" value="CATEGORY" />
+		<property name="type" value="OPERATE_CATEGORY" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="configRuntimeParameterPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CONFIG_RUNTIME_PARATEMER_PERMISSION" />
+		<property name="description" value="Permission for configuring runtime parameter" />
+		<property name="component" value="RUNTIME_PARAMETER" />
+		<property name="type" value="CONFIG_RUNTIME_PARATEMER" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="configBackendPermissionPermission" class="com.vertonur.pojo.security.Permission"
+		scope="prototype">
+		<property name="name" value="CONFIG_BACKEND_PERMISSION_PERMISSION" />
+		<property name="description"
+			value="Permission for configuring backend permissions" />
+		<property name="component" value="BACKEND_PERMISSION" />
+		<property name="type" value="CONFIG_BACKEND_PERMISSION" />
+		<property name="level" value="Level_1" />
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="backendAdminProprietary" class="java.lang.String">
+		<constructor-arg value="BACKEND_ADMIN" />
+	</bean>
+	<!-- common beans end -->
+
+	<bean id="validateOperateGroupPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateGroupPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateGroupPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateOperateGroupPermissionDataSource" />
+	</bean>
+
+	<bean id="operateGroupPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.GroupService\.(save|update|delete)Group" />
+	</bean>
+
+	<bean id="validateOperateGroupPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateOperateGroupPermissionAdvice" />
+		<property name="pointcut" ref="operateGroupPointcut" />
+	</bean>
+
+	<bean id="validateBackendPermissionAssignmentDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateGroupPermission" />
+				<ref bean="operateUserPermissoin" />
+				<ref bean="operateDepartmentPermission" />
+				<ref bean="operateCategoryPermission" />
+				<ref bean="configRuntimeParameterPermission" />
+				<ref bean="operateRankingPermission" />
+				<ref bean="configPointsPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateBackendPermissionAssignmentAdvice"
+		class="com.vertonur.security.spring.aop.advice.BackendPermissionAssignmentValidationAdvice"
+		scope="prototype">
+		<property name="dataSource"
+			ref="validateBackendPermissionAssignmentDataSource" />
+	</bean>
+
+	<bean id="updateGroupPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.GroupService\.updateGroup" />
+	</bean>
+
+	<bean id="validateBackendPermissionAssignmentAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateBackendPermissionAssignmentAdvice" />
+		<property name="pointcut" ref="updateGroupPointcut" />
+	</bean>
+
+	<bean id="validateOperateUserPermissoinDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateUserPermissoin" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateUserPermissoinAdvice"
+		class="com.vertonur.security.spring.aop.advice.OperateUserPermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateOperateUserPermissoinDataSource" />
+	</bean>
+
+	<bean id="operateUserPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.UserService\.(save|update|lock|unLock)(User|Admin|Moderator)" />
+	</bean>
+
+	<bean id="validateOperateUserPermissoinAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateOperateUserPermissoinAdvice" />
+		<property name="pointcut" ref="operateUserPointcut" />
+	</bean>
+
+	<bean id="validateOperateDepartmentPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateDepartmentPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateDepartmentPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource"
+			ref="validateOperateDepartmentPermissionDataSource" />
+	</bean>
+
+	<bean id="operateDepartmentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.DepartmentService\.(save|update|delete)Department" />
+	</bean>
+
+	<bean id="validateOperateDepartmentPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateOperateDepartmentPermissionAdvice" />
+		<property name="pointcut" ref="operateDepartmentPointcut" />
+	</bean>
+
+	<bean id="validateOperateCategoryPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="operateCategoryPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateOperateCategoryPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource" ref="validateOperateCategoryPermissionDataSource" />
+	</bean>
+
+	<bean id="operateCategorytPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.CategoryService\.(save|update|delete)Category" />
+	</bean>
+
+	<bean id="validateOperateCategoryPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateOperateCategoryPermissionAdvice" />
+		<property name="pointcut" ref="operateCategorytPointcut" />
+	</bean>
+
+	<bean id="validateConfigRuntimeParameterPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="configRuntimeParameterPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateConfigRuntimeParameterPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource"
+			ref="validateConfigRuntimeParameterPermissionDataSource" />
+	</bean>
+
+	<bean id="configRuntimeParameterPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.RuntimeParameterService\.update.*Config" />
+	</bean>
+
+	<bean id="validateConfigRuntimeParameterPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice"
+			ref="validateConfigRuntimeParameterPermissionAdvice" />
+		<property name="pointcut" ref="configRuntimeParameterPointcut" />
+	</bean>
+	
+	<bean id="validateConfigBackendPermissionPermissionDataSource"
+		class="com.vertonur.security.spring.aop.datasource.FixedValuePermissionDataSource"
+		scope="prototype">
+		<property name="permissionExamples">
+			<set>
+				<ref bean="configBackendPermissionPermission" />
+			</set>
+		</property>
+		<property name="proprietaryMark" ref="backendAdminProprietary" />
+	</bean>
+
+	<bean id="validateConfigBackendPermissionPermissionAdvice"
+		class="com.vertonur.security.spring.aop.advice.PermissionValidationAdvice"
+		scope="prototype">
+		<property name="dataSource"
+			ref="validateConfigBackendPermissionPermissionDataSource" />
+	</bean>
+
+	<bean id="configBackendPermissionPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.GroupService\.updateBackendPermissions" />
+	</bean>
+
+	<bean id="validateConfigBackendPermissionPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice"
+			ref="validateConfigBackendPermissionPermissionAdvice" />
+		<property name="pointcut" ref="configBackendPermissionPointcut" />
+	</bean>
+</beans>

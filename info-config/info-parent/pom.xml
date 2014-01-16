@@ -1,0 +1,161 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vertonur</groupId>
+	<artifactId>info-parent</artifactId>
+	<version>0.9.3</version>
+	<packaging>pom</packaging>
+	<description>A project that not just used to share common project info. across multi sub projects , also used to share eclipse common setting, e.g. external tool setting</description>
+
+	<properties>
+		<projects.version>0.9.3</projects.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- info's -->
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-utilities</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-dao-hb</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-dao-api</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-object-model</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-dms</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-security</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-ext-ranking</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-context</artifactId>
+				<version>${projects.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-webapp</artifactId>
+				<version>${projects.version}</version>
+				<type>war</type>
+			</dependency>
+			<!-- info's end -->
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.5.8</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.5.8</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>3.5.6-Final</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.0.8</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.3.166</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vertonur</groupId>
+				<artifactId>info-test-toolkit</artifactId>
+				<version>${projects.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- used by info-parent project only to set eclipse project facade -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>info_releases</id>
+			<layout>default</layout>
+			<url>http://maven.oschina.net/content/repositories/thirdparty/</url>
+		</repository>
+	</distributionManagement>
+</project>

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+          "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/info_forum</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">123</property>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hbm2ddl.auto">update</property>
+		<property name="show_sql">false</property>
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- configuration pool via c3p0 -->
+		<property name="hibernate.c3p0.acquire_increment">3</property>
+		<property name="hibernate.c3p0.max_size">100</property>
+		<property name="hibernate.c3p0.min_size">10</property>
+		<property name="hibernate.c3p0.idle_test_period">100</property> <!-- seconds -->
+		<property name="hibernate.c3p0.timeout">600</property> <!-- seconds -->
+		<property name="hibernate.connection.provider_class">
+			org.hibernate.connection.C3P0ConnectionProvider
+		</property>
+
+		<mapping class="com.vertonur.pojo.User" />
+		<mapping class="com.vertonur.pojo.Admin" />
+		<mapping class="com.vertonur.pojo.Guest" />
+		<mapping class="com.vertonur.pojo.security.Group" />
+		<mapping class="com.vertonur.pojo.security.Role" />
+		<mapping class="com.vertonur.pojo.security.Permission" />
+
+		<mapping class="com.vertonur.pojo.Category" />
+		<mapping class="com.vertonur.pojo.Department" />
+
+		<mapping class="com.vertonur.pojo.UserReadInfo" />
+		<mapping class="com.vertonur.pojo.UserReadPrivateMessage" />
+
+		<mapping class="com.vertonur.pojo.Info" />
+		<mapping class="com.vertonur.pojo.Comment" />
+		<mapping class="com.vertonur.pojo.PrivateMessage" />
+		<mapping class="com.vertonur.pojo.ModerationLog" />
+
+		<mapping class="com.vertonur.pojo.Attachment" />
+		<mapping class="com.vertonur.pojo.AttachmentInfo" />
+
+		<mapping class="com.vertonur.pojo.statistician.SystemStatistician" />
+		<mapping class="com.vertonur.pojo.statistician.UserMsgStatistician" />
+
+		<mapping class="com.vertonur.pojo.UserPreferences" />
+
+		<mapping class="com.vertonur.pojo.config.AttachmentConfig" />
+		<mapping class="com.vertonur.pojo.config.InfoConfig" />
+		<mapping class="com.vertonur.pojo.config.CommentConfig" />
+		<mapping class="com.vertonur.pojo.config.PrivateMsgConfig" />
+		<mapping class="com.vertonur.pojo.config.SystemContextConfig" />
+		<mapping class="com.vertonur.pojo.config.UserConfig" />
+		<mapping class="com.vertonur.pojo.config.EmailConfig" />
+		<mapping class="com.vertonur.pojo.config.ModerationConfig" />
+	</session-factory>
+
+</hibernate-configuration>
