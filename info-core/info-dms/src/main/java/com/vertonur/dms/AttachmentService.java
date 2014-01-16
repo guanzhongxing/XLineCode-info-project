@@ -38,4 +38,8 @@ public interface AttachmentService {
 	public String downloadAttachment(int attmId);
 
 	public Integer saveAttachmentInfo(AttachmentInfo attmInfo);
+	
+	public void setThumbPrefix();
+	
+	public void setUploadRootPath();
 }
