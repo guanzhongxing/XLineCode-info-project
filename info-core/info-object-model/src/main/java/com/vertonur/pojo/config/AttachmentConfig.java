@@ -18,6 +18,7 @@ public class AttachmentConfig implements Serializable {
 	public static enum AttmCngType {
 		SYS, USR
 	}
+
 	private int id;
 	private int maxAttmtNum;
 	private int maxSize;
@@ -26,9 +27,13 @@ public class AttachmentConfig implements Serializable {
 	private int thumbWidth;
 	private int thumbHeight;
 	private boolean thumbEnabled;
-	
+	private String BcsAccessKey;
+	private String BcsSecretKey;
+	private String BcsBucket;
+	private String BcsHost;
+
 	private AttmCngType configTyp;
-	
+
 	public AttachmentConfig() {
 	}
 
@@ -38,6 +43,7 @@ public class AttachmentConfig implements Serializable {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -64,6 +70,7 @@ public class AttachmentConfig implements Serializable {
 	public boolean isAttmtEnabled() {
 		return attmtEnabled;
 	}
+
 	public void setAttmtEnabled(boolean attmtEnabled) {
 		this.attmtEnabled = attmtEnabled;
 	}
@@ -76,7 +83,7 @@ public class AttachmentConfig implements Serializable {
 	public void setDownloadEnabled(boolean downloadEnabled) {
 		this.downloadEnabled = downloadEnabled;
 	}
-	
+
 	@Column(name = "ATTM_TMB_WID")
 	public int getThumbWidth() {
 		return thumbWidth;
@@ -111,5 +118,37 @@ public class AttachmentConfig implements Serializable {
 
 	public void setConfigTyp(AttmCngType configTyp) {
 		this.configTyp = configTyp;
+	}
+
+	public String getBcsAccessKey() {
+		return BcsAccessKey;
+	}
+
+	public void setBcsAccessKey(String bcsAccessKey) {
+		BcsAccessKey = bcsAccessKey;
+	}
+
+	public String getBcsSecretKey() {
+		return BcsSecretKey;
+	}
+
+	public void setBcsSecretKey(String bcsSecretKey) {
+		BcsSecretKey = bcsSecretKey;
+	}
+
+	public String getBcsBucket() {
+		return BcsBucket;
+	}
+
+	public void setBcsBucket(String bcsBucket) {
+		BcsBucket = bcsBucket;
+	}
+
+	public String getBcsHost() {
+		return BcsHost;
+	}
+
+	public void setBcsHost(String bcsHost) {
+		BcsHost = bcsHost;
 	}
 }

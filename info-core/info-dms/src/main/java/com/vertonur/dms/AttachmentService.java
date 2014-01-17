@@ -16,7 +16,7 @@ public interface AttachmentService {
 	public AttachmentConfig getAttmConfigById(int id);
 
 	public Attachment getAttmById(int attmId);
-	
+
 	public List<Attachment> getBcsAttms();
 
 	void deleteAttachment(Attachment attm);
@@ -27,7 +27,7 @@ public interface AttachmentService {
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
 	public Integer saveAttachment(Attachment attm);
 
-	public void confirmAttachmentUpload(Attachment attm);
+	public void confirmEmbeddedImageUpload(Attachment attm);
 
 	/**
 	 * record download num of the attachment and return the downloadable url
@@ -38,8 +38,4 @@ public interface AttachmentService {
 	public String downloadAttachment(int attmId);
 
 	public Integer saveAttachmentInfo(AttachmentInfo attmInfo);
-	
-	public void setThumbPrefix();
-	
-	public void setUploadRootPath();
 }

@@ -590,7 +590,7 @@ public class DataGenerator {
 			attachment.setAttmInfo(attachmentInfo);
 
 			attachmentService.saveAttachment(attachment);
-			attachmentService.confirmAttachmentUpload(attachment);
+			attachmentService.confirmEmbeddedImageUpload(attachment);;
 			setAttachmentId(attachment.getId());
 		}
 	}
