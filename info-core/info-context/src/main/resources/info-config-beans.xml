@@ -66,10 +66,16 @@
 		<property name="maxSize" value="10485760" />
 		<property name="attmtEnabled" value="true" />
 		<property name="downloadEnabled" value="true" />
+		<property name="thumbPrefix" value="_thumb" />
 		<property name="thumbWidth" value="400" />
 		<property name="thumbHeight" value="400" />
 		<property name="thumbEnabled" value="true" />
 		<property name="configTyp" value="SYS" />
+		
+		<property name="bcsAccessKey" value="6lHNnwyPTevGeNOLOzsOQ8GR" />
+		<property name="bcsSecretKey" value="IUnniM8ibA0iUCz2273Q6vAwj6OsUkBs" />
+		<property name="bcsBucket" value="xlinecode-demo" />
+		<property name="bcsHost" value="bcs.duapp.com" />
 	</bean>
 
 	<bean id="emailConfig" class="com.vertonur.pojo.config.EmailConfig">

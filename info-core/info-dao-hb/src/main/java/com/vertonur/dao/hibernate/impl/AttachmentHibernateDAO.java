@@ -59,14 +59,7 @@ public class AttachmentHibernateDAO extends
 		getSession().delete(attm);
 	}
 
-	//TODO:make setUploadConfirmed private and add reflection code to set confirmed to true
-	@Override
-	public void confirmAttachmentUpload(Attachment attm) {
-		AttachmentInfo info = attm.getAttmInfo();
-		info.setUploadConfirmed(true);
-		updateAttachment(attm);
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Attachment> getBcsAttms() {

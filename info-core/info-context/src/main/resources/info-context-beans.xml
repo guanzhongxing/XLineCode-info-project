@@ -124,7 +124,7 @@
 		</property>
 		<property name="proxyInterfaces" value="com.vertonur.dms.UserService" />
 	</bean>
-	
+
 	<bean id="infoService" class="org.springframework.aop.framework.ProxyFactoryBean"
 		scope="prototype">
 		<property name="target" ref="infoServiceTarget" />

@@ -2,6 +2,11 @@ package com.vertonur.bean;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -590,7 +595,7 @@ public class DataGenerator {
 			attachment.setAttmInfo(attachmentInfo);
 
 			attachmentService.saveAttachment(attachment);
-			attachmentService.confirmAttachmentUpload(attachment);
+			attachmentService.confirmEmbeddedImageUpload(attachment);
 			setAttachmentId(attachment.getId());
 		}
 	}
@@ -676,6 +681,25 @@ public class DataGenerator {
 		Moderator moderator = userService.getModeratorById(moderatorId);
 		Integer digestingNum = moderator.getCategoryDigestingNum(categoryId);
 		assertEquals(expectedNum, digestingNum.intValue());
+	}
+
+	public File generateSampleTxtFile() {
+		try {
+			File file = File.createTempFile("info-project-", ".txt");
+			file.deleteOnExit();
+
+			Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.close();
+
+			return file;
+		} catch (IOException e) {
+			return null;
+		}
 	}
 
 	public void logoutUser() {

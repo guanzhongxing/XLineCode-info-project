@@ -98,17 +98,11 @@ public class ImageManipulator {
 	 *            as JPEG images, or <code>ImageUtils.IMAGE_PNG</code> to save
 	 *            as PNG.
 	 * @return <code>false</code> if no appropriate writer is found
+	 * @throws IOException 
 	 */
 	public static boolean saveImage(BufferedImage image, String type,
-			String toFileName) {
-		try {
-			return ImageIO.write(image, type, new File(toFileName));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out
-					.println("Execpton in j2eebbs.ImageManipulator.saveImage");
-			throw new RuntimeException();
-		}
+			String toFileName) throws IOException {
+		return ImageIO.write(image, type, new File(toFileName));
 	}
 
 	/**

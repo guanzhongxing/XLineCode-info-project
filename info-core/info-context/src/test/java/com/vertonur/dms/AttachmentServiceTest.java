@@ -156,6 +156,12 @@ public class AttachmentServiceTest {
 		attachmentService.downloadAttachment(saver.getAttachmentId());
 		service.commitTransaction();
 	}
+	
+	public void testUploadAttachment(){
+		
+	}
+	
+	
 
 	@After
 	public void destroy() throws LoginException, SQLException {

@@ -18,17 +18,23 @@ public class AttachmentConfig implements Serializable {
 	public static enum AttmCngType {
 		SYS, USR
 	}
+
 	private int id;
 	private int maxAttmtNum;
 	private int maxSize;
 	private boolean attmtEnabled;
 	private boolean downloadEnabled;
+	private String thumbPrefix;
 	private int thumbWidth;
 	private int thumbHeight;
 	private boolean thumbEnabled;
-	
+	private String bcsAccessKey;
+	private String bcsSecretKey;
+	private String bcsBucket;
+	private String bcsHost;
+
 	private AttmCngType configTyp;
-	
+
 	public AttachmentConfig() {
 	}
 
@@ -38,6 +44,7 @@ public class AttachmentConfig implements Serializable {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -64,6 +71,7 @@ public class AttachmentConfig implements Serializable {
 	public boolean isAttmtEnabled() {
 		return attmtEnabled;
 	}
+
 	public void setAttmtEnabled(boolean attmtEnabled) {
 		this.attmtEnabled = attmtEnabled;
 	}
@@ -76,7 +84,7 @@ public class AttachmentConfig implements Serializable {
 	public void setDownloadEnabled(boolean downloadEnabled) {
 		this.downloadEnabled = downloadEnabled;
 	}
-	
+
 	@Column(name = "ATTM_TMB_WID")
 	public int getThumbWidth() {
 		return thumbWidth;
@@ -111,5 +119,45 @@ public class AttachmentConfig implements Serializable {
 
 	public void setConfigTyp(AttmCngType configTyp) {
 		this.configTyp = configTyp;
+	}
+
+	public String getBcsAccessKey() {
+		return bcsAccessKey;
+	}
+
+	public void setBcsAccessKey(String bcsAccessKey) {
+		this.bcsAccessKey = bcsAccessKey;
+	}
+
+	public String getBcsSecretKey() {
+		return bcsSecretKey;
+	}
+
+	public void setBcsSecretKey(String bcsSecretKey) {
+		this.bcsSecretKey = bcsSecretKey;
+	}
+
+	public String getBcsBucket() {
+		return bcsBucket;
+	}
+
+	public void setBcsBucket(String bcsBucket) {
+		this.bcsBucket = bcsBucket;
+	}
+
+	public String getBcsHost() {
+		return bcsHost;
+	}
+
+	public void setBcsHost(String bcsHost) {
+		this.bcsHost = bcsHost;
+	}
+
+	public String getThumbPrefix() {
+		return thumbPrefix;
+	}
+
+	public void setThumbPrefix(String thumbPrefix) {
+		this.thumbPrefix = thumbPrefix;
 	}
 }

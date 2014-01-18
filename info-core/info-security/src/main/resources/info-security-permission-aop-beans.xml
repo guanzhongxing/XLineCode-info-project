@@ -502,15 +502,37 @@
 		<property name="dataSource" ref="validateUploadAttmPermissionDataSource" />
 	</bean>
 
-	<bean id="saveAttmPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+	<bean id="uploadInfoEmbededImagePointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
 		<property name="pattern"
-			value="com\.vertonur\.dms\.AttachmentService.confirmAttachmentUpload" />
+			value="com\.vertonur\.dms\.AttachmentService.uploadInfoEmbededImage" />
 	</bean>
 
-	<bean id="validateUploadAttmPermissionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+	<bean id="validateUploadInfoEmbededImageAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
 		scope="prototype">
 		<property name="advice" ref="validateUploadAttmPermissionAdvice" />
-		<property name="pointcut" ref="saveAttmPointcut" />
+		<property name="pointcut" ref="uploadInfoEmbededImagePointcut" />
+	</bean>
+	
+	<bean id="uploadImagePointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.AttachmentService.uploadImage" />
+	</bean>
+
+	<bean id="validateUploadImageAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateUploadAttmPermissionAdvice" />
+		<property name="pointcut" ref="uploadImagePointcut" />
+	</bean>
+	
+	<bean id="uploadAttchmentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern"
+			value="com\.vertonur\.dms\.AttachmentService.uploadAttchment" />
+	</bean>
+
+	<bean id="validateUploadAttchmentAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+		scope="prototype">
+		<property name="advice" ref="validateUploadAttmPermissionAdvice" />
+		<property name="pointcut" ref="uploadAttchmentPointcut" />
 	</bean>
 
 	<bean id="validateDownloadAttmPermissionDataSource"
