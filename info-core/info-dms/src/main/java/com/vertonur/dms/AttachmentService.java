@@ -30,8 +30,6 @@ public interface AttachmentService {
 	@RolesAllowed(RoleEnum.ROLE_USER)
 	public void updateAttachment(Attachment attm);
 
-	public Integer saveAttachment(Attachment attm);
-
 	public void confirmEmbeddedImageUpload(Attachment attm);
 
 	/**
@@ -44,24 +42,60 @@ public interface AttachmentService {
 
 	public Integer saveAttachmentInfo(AttachmentInfo attmInfo);
 
+	/**
+	 * Upload an image that is emmbeded in the content of an info.Value of
+	 * uploadRoot depends on the AttachmentType.For AttachmentType.BCS, download
+	 * url of the Attachment is set when this method finish.For the
+	 * AttachmentType.LOCAL, physicalFilename of the Attachment should be used
+	 * to assemble the download url for the web app.
+	 * 
+	 * @param attachmentType
+	 * @param inputStream
+	 * @param mimeType
+	 * @param uploadRoot
+	 * @param fileName
+	 * @param fileSize
+	 * @param attmComment
+	 * @param user
+	 * @param info
+	 * @return
+	 * @throws AttachmentSizeExceedException
+	 * @throws IOException
+	 */
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
 	public Attachment uploadInfoEmbededImage(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException;
 
+	/**
+	 * Upload an image and generate a thumb for the image
+	 * 
+	 * @param attachmentType
+	 * @param inputStream
+	 * @param mimeType
+	 * @param uploadRoot
+	 * @param fileName
+	 * @param fileSize
+	 * @param attmComment
+	 * @param user
+	 * @param info
+	 * @return
+	 * @throws AttachmentSizeExceedException
+	 * @throws IOException
+	 */
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
 	public Attachment uploadImage(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException;
 
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
 	public Attachment uploadAttchment(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException;
 }

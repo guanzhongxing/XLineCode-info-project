@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import com.vertonur.pojo.AbstractInfo;
 import com.vertonur.pojo.Admin;
-import com.vertonur.pojo.Attachment;
-import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.Category;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.Department;
@@ -72,25 +70,6 @@ public class CommonDataGenerator {
 		}
 
 		return moderators;
-	}
-
-	public static Attachment generateAttachment(AbstractInfo attmHolder,
-			User uploader) {
-		Attachment attachment = new Attachment();
-		attachment.setAttmHolder(attmHolder);
-		attachment.setUploader(uploader);
-
-		return attachment;
-	}
-
-	public static AttachmentInfo generateAttachmentInfo(Attachment attachment) {
-		AttachmentInfo attachmentInfo = new AttachmentInfo();
-		attachmentInfo.setAttm(attachment);
-		attachmentInfo.setComment("test");
-		attachmentInfo.setFilesize(1028);
-		attachmentInfo.setRealFilename("test");
-
-		return attachmentInfo;
 	}
 
 	public static Category generateCategory(Admin admin) {

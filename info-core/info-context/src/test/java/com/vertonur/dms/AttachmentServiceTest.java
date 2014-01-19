@@ -33,7 +33,7 @@ public class AttachmentServiceTest {
 	}
 
 	@Test
-	public void testSaveAttachmentPermission() throws LoginException {
+	public void testUploadAttachmentPermission() throws LoginException {
 		service.beginTransaction();
 		saver.loginAdmin();
 		saver.addDepartmentAndCategory();
@@ -46,8 +46,12 @@ public class AttachmentServiceTest {
 		service.commitTransaction();
 	}
 
+	public void testUploadAttachment() {
+
+	}
+
 	@Test(expected = InsufficientPermissionException.class)
-	public void testSaveAttachmentWithoutUploadPermission()
+	public void testUploadAttachmentWithoutUploadPermission()
 			throws LoginException {
 		service.beginTransaction();
 		saver.loginAdmin();
@@ -63,7 +67,7 @@ public class AttachmentServiceTest {
 	}
 
 	@Test(expected = InsufficientPermissionException.class)
-	public void testSaveAttachmentWithoutDownloadPermission()
+	public void testUploadAttachmentWithoutDownloadPermission()
 			throws LoginException {
 		service.beginTransaction();
 		saver.loginAdmin();
@@ -93,11 +97,12 @@ public class AttachmentServiceTest {
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		attachmentService.downloadAttachment(saver.getAttachmentId());
 		service.commitTransaction();
-		
+
 		service.beginTransaction();
-		 attachmentService = service
+		attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
-		Attachment attachment = attachmentService.getAttmById(saver.getAttachmentId());
+		Attachment attachment = attachmentService.getAttmById(saver
+				.getAttachmentId());
 		assertEquals(1, attachment.getAttmInfo().getDownloadCount());
 		service.commitTransaction();
 	}
@@ -156,12 +161,6 @@ public class AttachmentServiceTest {
 		attachmentService.downloadAttachment(saver.getAttachmentId());
 		service.commitTransaction();
 	}
-	
-	public void testUploadAttachment(){
-		
-	}
-	
-	
 
 	@After
 	public void destroy() throws LoginException, SQLException {

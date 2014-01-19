@@ -3,10 +3,17 @@ package com.vertonur.bean;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.FileNameMap;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +37,7 @@ import com.vertonur.dms.PermissionService;
 import com.vertonur.dms.UserService;
 import com.vertonur.dms.constant.ServiceEnum;
 import com.vertonur.dms.exception.Assigned2SubGroupException;
+import com.vertonur.dms.exception.AttachmentSizeExceedException;
 import com.vertonur.dms.exception.CategoryModerationListNotEmptyException;
 import com.vertonur.dms.exception.DeptModerationListNotEmptyException;
 import com.vertonur.dms.exception.SavingCommentToLockedInfoException;
@@ -39,7 +47,7 @@ import com.vertonur.ext.ranking.exception.RankingWithPointsExistException;
 import com.vertonur.ext.ranking.service.RankingService;
 import com.vertonur.pojo.Admin;
 import com.vertonur.pojo.Attachment;
-import com.vertonur.pojo.AttachmentInfo;
+import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.Category;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.Department;
@@ -58,6 +66,7 @@ import com.vertonur.test.CommonDataGenerator;
 public class DataGenerator {
 	private static int USERS_NUM = 9;
 	private static int GROUPS_NUM = 9;
+	private static String ATTACHMENT_UPLOAD_IMAGE = "/attachment-demo.jpg";
 
 	private SystemContextService service;
 	private int[] userIds = new int[USERS_NUM];
@@ -80,8 +89,11 @@ public class DataGenerator {
 	private int moderatorId;
 	private int adminId = 1;
 	private int groupId;
+	private String uploadRoot;
+	private String bcsUploadRoot;
 
 	public DataGenerator() throws LoginException {
+		uploadRoot = System.getProperty("user.home") + "/info-project";
 		service = SystemContextService.getService();
 		generateGuestAuthenticationToken();
 		addInfoUser();
@@ -588,15 +600,93 @@ public class DataGenerator {
 		AttachmentService attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		for (int i = 0; i < num; i++) {
-			Attachment attachment = CommonDataGenerator.generateAttachment(
-					info, info.getAuthor());
-			AttachmentInfo attachmentInfo = CommonDataGenerator
-					.generateAttachmentInfo(attachment);
-			attachment.setAttmInfo(attachmentInfo);
+			File file = generateSampleTxtFile();
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			String mimeType = fileNameMap.getContentTypeFor(file.getName());
+			InputStream inputStream;
+			try {
+				inputStream = new FileInputStream(file);
+				Attachment attachment = attachmentService.uploadAttchment(
+						AttachmentType.LOCAL, inputStream, mimeType,
+						uploadRoot, file.getName(), file.length(), "test",
+						info.getAuthor(), info);
+				setAttachmentId(attachment.getId());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (AttachmentSizeExceedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-			attachmentService.saveAttachment(attachment);
-			attachmentService.confirmEmbeddedImageUpload(attachment);
+	public void addEmbeddedImageAttachment2Local() throws URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, true, true);
+	}
+
+	public void addEmbeddedImageAttachment2Bcs() throws URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, true, true);
+	}
+
+	public void addImageAttachment2Local() throws URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, true, false);
+	}
+
+	public void addImageAttachment2Bcs() throws URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, true, false);
+	}
+
+	public void addAttachment2Bcs() throws URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, false, false);
+	}
+
+	private void uploadAttachment(AttachmentType attachmentType,
+			boolean isImage, boolean isEmbedded) throws URISyntaxException {
+		String uploadRoot = this.uploadRoot;
+		if (AttachmentType.BCS.equals(attachmentType))
+			uploadRoot = bcsUploadRoot;
+
+		InfoService infoService = service
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		Info info = infoService.getInfoById(categoryId, infoId);
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		File file;
+		if (isImage) {
+			URL url = Thread.currentThread().getContextClassLoader()
+					.getResource(ATTACHMENT_UPLOAD_IMAGE);
+			file = new File(url.toURI());
+		} else {
+			file = generateSampleTxtFile();
+		}
+
+		FileNameMap fileNameMap = URLConnection.getFileNameMap();
+		String mimeType = fileNameMap.getContentTypeFor(file.getName());
+		InputStream inputStream;
+		try {
+			inputStream = new FileInputStream(file);
+			Attachment attachment;
+			if (isImage && isEmbedded)
+				attachment = attachmentService.uploadInfoEmbededImage(
+						attachmentType, inputStream, mimeType, uploadRoot,
+						file.getName(), file.length(), "test",
+						info.getAuthor(), info);
+			else if (isImage)
+				attachment = attachmentService.uploadImage(attachmentType,
+						inputStream, mimeType, uploadRoot, file.getName(),
+						file.length(), "test", info.getAuthor(), info);
+			else
+				attachment = attachmentService.uploadAttchment(attachmentType,
+						inputStream, mimeType, uploadRoot, file.getName(),
+						file.length(), "test", info.getAuthor(), info);
 			setAttachmentId(attachment.getId());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (AttachmentSizeExceedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

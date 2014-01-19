@@ -21,7 +21,7 @@ public class AttachmentConfig implements Serializable {
 
 	private int id;
 	private int maxAttmtNum;
-	private int maxSize;
+	private long maxSize;
 	private boolean attmtEnabled;
 	private boolean downloadEnabled;
 	private String thumbPrefix;
@@ -59,11 +59,11 @@ public class AttachmentConfig implements Serializable {
 	}
 
 	@Column(name = "ATTM_CNG_MAX_SIZE")
-	public int getMaxSize() {
+	public long getMaxSize() {
 		return maxSize;
 	}
 
-	public void setMaxSize(int maxSize) {
+	public void setMaxSize(long maxSize) {
 		this.maxSize = maxSize;
 	}
 

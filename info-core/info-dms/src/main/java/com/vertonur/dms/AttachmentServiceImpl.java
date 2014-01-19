@@ -99,7 +99,7 @@ public class AttachmentServiceImpl extends GenericService implements
 
 	public Attachment uploadInfoEmbededImage(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException {
 
@@ -114,14 +114,14 @@ public class AttachmentServiceImpl extends GenericService implements
 
 	public Attachment uploadImage(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException {
 
 		Attachment attachment = uploadAttchment(attachmentType, inputStream,
 				mimeType, uploadRoot, fileName, fileSize, true, attmComment,
 				user, info);
-		attachment.getAttmInfo().setFileType(FileType.EMBEDDED_IMAGE);
+		attachment.getAttmInfo().setFileType(FileType.FILE);
 		attachment.getAttmInfo().setUploadConfirmed(true);
 		updateAttachment(attachment);
 
@@ -130,12 +130,13 @@ public class AttachmentServiceImpl extends GenericService implements
 
 	public Attachment uploadAttchment(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, String attmComment, User user,
+			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException {
 		Attachment attachment = uploadAttchment(attachmentType, inputStream,
 				mimeType, uploadRoot, fileName, fileSize, false, attmComment,
 				user, info);
+		attachment.getAttmInfo().setFileType(FileType.FILE);
 		attachment.getAttmInfo().setUploadConfirmed(true);
 		updateAttachment(attachment);
 
@@ -144,11 +145,11 @@ public class AttachmentServiceImpl extends GenericService implements
 
 	private Attachment uploadAttchment(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, int fileSize, boolean generateThumb,
+			String fileName, long fileSize, boolean generateThumb,
 			String attmComment, User user, AbstractInfo info)
 			throws AttachmentSizeExceedException, IOException {
 		AttachmentConfig attachmentConfig = getSysAttmConfig();
-		int maxAttmSize = attachmentConfig.getMaxSize();
+		long maxAttmSize = attachmentConfig.getMaxSize();
 		if (fileSize > maxAttmSize)
 			throw new AttachmentSizeExceedException(fileSize, maxAttmSize);
 
