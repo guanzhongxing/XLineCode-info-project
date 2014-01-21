@@ -92,7 +92,7 @@ public class DataGenerator {
 	private int adminId = 1;
 	private int groupId;
 	private String uploadRoot;
-	private String bcsUploadRoot;
+	private String bcsUploadRoot="/upload/test/";
 
 	public DataGenerator() throws LoginException {
 		uploadRoot = System.getProperty("user.home") + "/info-project";

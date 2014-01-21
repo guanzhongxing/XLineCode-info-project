@@ -51,59 +51,42 @@ public class AttachmentServiceTest {
 	}
 
 	@Test
-	public void testUploadAttachment() throws LoginException {
-		service.beginTransaction();
-		saver.loginAdmin();
-		saver.addDepartmentAndCategory();
-		saver.addInfo();
-		service.commitTransaction();
-
-		service.beginTransaction();
-		saver.loginInfoUser();
-		saver.addAttachment();
-		service.commitTransaction();
-
-		service.beginTransaction();
-		saver.loginInfoUser();
-		int id = saver.getAttachmentId();
-		AttachmentService attachmentService = service
-				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
-		Attachment attachment = attachmentService.getAttmById(id);
-		AttachmentInfo info = attachment.getAttmInfo();
-		assertEquals(AttachmentType.LOCAL, info.getAttachmentType());
-		assertEquals(FileType.FILE, info.getFileType());
-		assertEquals(DataGenerator.TXT_FILE_SIZE, info.getFilesize());
-		service.commitTransaction();
+	public void testUploadAttachment() throws LoginException,
+			URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, false, false);
 	}
 
 	@Test
-	public void testUploadAttachment2Bcs() throws LoginException {
-		service.beginTransaction();
-		saver.loginAdmin();
-		saver.addDepartmentAndCategory();
-		saver.addInfo();
-		service.commitTransaction();
-
-		service.beginTransaction();
-		saver.loginInfoUser();
-		saver.addAttachment();
-		service.commitTransaction();
-
-		service.beginTransaction();
-		saver.loginInfoUser();
-		int id = saver.getAttachmentId();
-		AttachmentService attachmentService = service
-				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
-		Attachment attachment = attachmentService.getAttmById(id);
-		AttachmentInfo info = attachment.getAttmInfo();
-		assertEquals(AttachmentType.BCS, info.getAttachmentType());
-		assertEquals(FileType.FILE, info.getFileType());
-		assertEquals(DataGenerator.TXT_FILE_SIZE, info.getFilesize());
-		service.commitTransaction();
+	public void testUploadAttachment2Bcs() throws LoginException,
+			URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, false, false);
 	}
 
 	@Test
 	public void testUploadImage2Local() throws LoginException,
+			URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, true, false);
+	}
+
+	@Test
+	public void testUploadImage2Bcs() throws LoginException, URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, true, false);
+	}
+
+	@Test
+	public void testUploadEmbeddedImage2Local() throws LoginException,
+			URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, false, true);
+	}
+
+	@Test
+	public void testUploadEmbeddedImage2Bcs() throws LoginException,
+			URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, false, true);
+	}
+
+	private void uploadAttachment(AttachmentType attachmentType,
+			boolean isImage, boolean isEmbeddedImage) throws LoginException,
 			URISyntaxException {
 		service.beginTransaction();
 		saver.loginAdmin();
@@ -113,7 +96,22 @@ public class AttachmentServiceTest {
 
 		service.beginTransaction();
 		saver.loginInfoUser();
-		saver.addImageAttachment2Local();
+		if (isEmbeddedImage) {
+			if (AttachmentType.BCS.equals(attachmentType))
+				saver.addEmbeddedImageAttachment2Bcs();
+			else
+				saver.addEmbeddedImageAttachment2Local();
+		} else if (isImage) {
+			if (AttachmentType.BCS.equals(attachmentType))
+				saver.addImageAttachment2Bcs();
+			else
+				saver.addImageAttachment2Local();
+		} else {
+			if (AttachmentType.BCS.equals(attachmentType))
+				saver.addAttachment2Bcs();
+			else
+				saver.addAttachment();
+		}
 		service.commitTransaction();
 
 		service.beginTransaction();
@@ -123,10 +121,16 @@ public class AttachmentServiceTest {
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		Attachment attachment = attachmentService.getAttmById(id);
 		AttachmentInfo info = attachment.getAttmInfo();
-		assertEquals(AttachmentType.LOCAL, info.getAttachmentType());
-		assertEquals(FileType.FILE, info.getFileType());
-		assertEquals(DataGenerator.ATTACHMENT_DEMO_IMAGE_SIZE,
-				info.getFilesize());
+		assertEquals(attachmentType, info.getAttachmentType());
+		if (isEmbeddedImage)
+			assertEquals(FileType.EMBEDDED_IMAGE, info.getFileType());
+		else
+			assertEquals(FileType.FILE, info.getFileType());
+		if (isImage || isEmbeddedImage)
+			assertEquals(DataGenerator.ATTACHMENT_DEMO_IMAGE_SIZE,
+					info.getFilesize());
+		else
+			assertEquals(DataGenerator.TXT_FILE_SIZE, info.getFilesize());
 		service.commitTransaction();
 	}
 
