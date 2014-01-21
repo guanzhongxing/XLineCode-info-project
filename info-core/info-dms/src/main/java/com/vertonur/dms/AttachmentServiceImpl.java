@@ -1,6 +1,7 @@
 package com.vertonur.dms;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -159,7 +160,7 @@ public class AttachmentServiceImpl extends GenericService implements
 				+ fileName;
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-		String tmp = mainTpye + "/" + format.format(uploadDate);
+		String tmp = mainTpye + "/" + format.format(uploadDate.getTime());
 		String fullPath = uploadRoot + "/" + tmp;
 
 		AttachmentInfo attmInfo = new AttachmentInfo();
@@ -173,7 +174,7 @@ public class AttachmentServiceImpl extends GenericService implements
 
 		Date startTime = new Date();
 		if (AttachmentType.LOCAL.equals(attachmentType)) {
-			upload2Local(inputStream, fullPath, realFileName);
+			inputStream = upload2Local(inputStream, fullPath, realFileName);
 			if (mainTpye.equals("image") && generateThumb) {
 				attmInfo.setHasThumb(true);
 				String extension = fileName.split("\\.")[1];
@@ -185,11 +186,13 @@ public class AttachmentServiceImpl extends GenericService implements
 						attachmentConfig.getThumbWidth(),
 						attachmentConfig.getThumbHeight());
 			}
+
 		} else {
 			String downloadUrl = upload2Bcs(inputStream, fullPath + "/"
 					+ realFileName, mimeType, fileSize);
 			attmInfo.setDownloadUrl(downloadUrl);
 		}
+		inputStream.close();
 		Date endTime = new Date();
 		long elapsedTime = endTime.getTime() - startTime.getTime();
 		attmInfo.setUploadTimeInMillis(elapsedTime);
@@ -202,8 +205,8 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attm;
 	}
 
-	private void upload2Local(InputStream inputStream, String phisicalPath,
-			String realFileName) throws IOException {
+	private InputStream upload2Local(InputStream inputStream,
+			String phisicalPath, String realFileName) throws IOException {
 		File diskFile = new File(phisicalPath);
 		diskFile.mkdirs();
 
@@ -219,6 +222,10 @@ public class AttachmentServiceImpl extends GenericService implements
 		inputStream.close();
 		outputStream.flush();
 		outputStream.close();
+
+		diskFile = new File(phisicalPath);
+		inputStream = new FileInputStream(diskFile);
+		return inputStream;
 	}
 
 	private String upload2Bcs(InputStream inputStream, String phisicalPath,

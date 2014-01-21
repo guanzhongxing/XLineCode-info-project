@@ -66,7 +66,9 @@ import com.vertonur.test.CommonDataGenerator;
 public class DataGenerator {
 	private static int USERS_NUM = 9;
 	private static int GROUPS_NUM = 9;
-	private static String ATTACHMENT_UPLOAD_IMAGE = "/attachment-demo.jpg";
+	private static String ATTACHMENT_UPLOAD_IMAGE = "attachment-demo.jpg";
+	public static int TXT_FILE_SIZE = 105;
+	public static int ATTACHMENT_DEMO_IMAGE_SIZE = 22377;
 
 	private SystemContextService service;
 	private int[] userIds = new int[USERS_NUM];
