@@ -77,9 +77,10 @@ public class AttachmentServiceImpl extends GenericService implements
 	// TODO:make setUploadConfirmed private and add reflection code to set
 	// confirmed to true
 	@Override
-	public void confirmEmbeddedImageUpload(Attachment attm) {
+	public void confirmEmbeddedImageUpload(AbstractInfo holder, Attachment attm) {
 		AttachmentInfo info = attm.getAttmInfo();
 		info.setUploadConfirmed(true);
+		attm.setAttmHolder(holder);
 		updateAttachment(attm);
 	}
 
@@ -100,13 +101,12 @@ public class AttachmentServiceImpl extends GenericService implements
 
 	public Attachment uploadInfoEmbededImage(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, String attmComment, User user,
-			AbstractInfo info) throws AttachmentSizeExceedException,
-			IOException {
+			String fileName, long fileSize, User user)
+			throws AttachmentSizeExceedException, IOException {
 
 		Attachment attachment = uploadAttchment(attachmentType, inputStream,
-				mimeType, uploadRoot, fileName, fileSize, false, attmComment,
-				user, info);
+				mimeType, uploadRoot, fileName, fileSize, false, null, user,
+				null);
 		attachment.getAttmInfo().setFileType(FileType.EMBEDDED_IMAGE);
 		updateAttachment(attachment);
 

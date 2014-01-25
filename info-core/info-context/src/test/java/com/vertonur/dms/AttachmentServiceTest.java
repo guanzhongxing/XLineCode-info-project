@@ -1,6 +1,6 @@
 package com.vertonur.dms;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -20,6 +20,7 @@ import com.vertonur.pojo.Attachment;
 import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.AttachmentInfo.FileType;
+import com.vertonur.pojo.Info;
 import com.vertonur.security.exception.InsufficientPermissionException;
 
 public class AttachmentServiceTest {
@@ -77,12 +78,84 @@ public class AttachmentServiceTest {
 	public void testUploadEmbeddedImage2Local() throws LoginException,
 			URISyntaxException {
 		uploadAttachment(AttachmentType.LOCAL, false, true);
+
+		service.beginTransaction();
+		int id = saver.getAttachmentId();
+		int infoId = saver.getInfoId();
+		int categoryId = saver.getCategoryId();
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		InfoService infoService = (InfoService) service
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		Info info = infoService.getInfoById(categoryId, infoId);
+		Attachment attachment = attachmentService.getAttmById(id);
+		attachmentService.confirmEmbeddedImageUpload(info, attachment);
+		service.commitTransaction();
+
+		service.beginTransaction();
+		id = saver.getAttachmentId();
+		attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		attachment = attachmentService.getAttmById(id);
+		assertEquals(true, attachment.getAttmInfo().isUploadConfirmed());
+		service.commitTransaction();
+	}
+
+	@Test
+	public void testUploadEmbeddedImage2LocalWithoutConfirm()
+			throws LoginException, URISyntaxException {
+		uploadAttachment(AttachmentType.LOCAL, false, true);
+
+		service.beginTransaction();
+		int id = saver.getAttachmentId();
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		Attachment attachment = attachmentService.getAttmById(id);
+		assertEquals(false, attachment.getAttmInfo().isUploadConfirmed());
+		assertNull(attachment.getAttmHolder());
+		service.commitTransaction();
 	}
 
 	@Test
 	public void testUploadEmbeddedImage2Bcs() throws LoginException,
 			URISyntaxException {
 		uploadAttachment(AttachmentType.BCS, false, true);
+
+		service.beginTransaction();
+		int id = saver.getAttachmentId();
+		int infoId = saver.getInfoId();
+		int categoryId = saver.getCategoryId();
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		InfoService infoService = (InfoService) service
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		Info info = infoService.getInfoById(categoryId, infoId);
+		Attachment attachment = attachmentService.getAttmById(id);
+		attachmentService.confirmEmbeddedImageUpload(info, attachment);
+		service.commitTransaction();
+
+		service.beginTransaction();
+		id = saver.getAttachmentId();
+		attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		attachment = attachmentService.getAttmById(id);
+		assertEquals(true, attachment.getAttmInfo().isUploadConfirmed());
+		service.commitTransaction();
+	}
+
+	@Test
+	public void testUploadEmbeddedImage2BcsWithoutConfirm()
+			throws LoginException, URISyntaxException {
+		uploadAttachment(AttachmentType.BCS, false, true);
+
+		service.beginTransaction();
+		int id = saver.getAttachmentId();
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		Attachment attachment = attachmentService.getAttmById(id);
+		assertEquals(false, attachment.getAttmInfo().isUploadConfirmed());
+		assertNull(attachment.getAttmHolder());
+		service.commitTransaction();
 	}
 
 	private void uploadAttachment(AttachmentType attachmentType,

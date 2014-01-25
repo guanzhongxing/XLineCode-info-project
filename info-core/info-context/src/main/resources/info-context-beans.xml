@@ -91,7 +91,6 @@
 		<property name="target" ref="attachmentServiceTarget" />
 		<property name="interceptorNames">
 			<list>
-				<value>validateUploadInfoEmbededImageAdvisor</value>
 				<value>validateUploadImageAdvisor</value>
 				<value>validateUploadAttchmentAdvisor</value>
 				<value>validateDownloadAttmPermissionAdvisor</value>

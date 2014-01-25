@@ -92,7 +92,7 @@ public class DataGenerator {
 	private int adminId = 1;
 	private int groupId;
 	private String uploadRoot;
-	private String bcsUploadRoot="/upload/test/";
+	private String bcsUploadRoot = "/upload/test/";
 
 	public DataGenerator() throws LoginException {
 		uploadRoot = System.getProperty("user.home") + "/info-project";
@@ -672,8 +672,7 @@ public class DataGenerator {
 			if (isImage && isEmbedded)
 				attachment = attachmentService.uploadInfoEmbededImage(
 						attachmentType, inputStream, mimeType, uploadRoot,
-						file.getName(), file.length(), "test",
-						info.getAuthor(), info);
+						file.getName(), file.length(), info.getAuthor());
 			else if (isImage)
 				attachment = attachmentService.uploadImage(attachmentType,
 						inputStream, mimeType, uploadRoot, file.getName(),
