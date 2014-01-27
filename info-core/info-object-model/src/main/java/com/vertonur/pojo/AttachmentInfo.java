@@ -21,8 +21,8 @@ public class AttachmentInfo {
 
 	private int id;
 	private int downloadCount = 0;
-	private String realFilename;
-	private String physicalFilename;
+	private String fileName;
+	private String filePath;
 	private String downloadUrl;
 	private String comment;
 	private String mimeType;
@@ -60,22 +60,22 @@ public class AttachmentInfo {
 		++downloadCount;
 	}
 
-	@Column(name = "ATTM_INFO_REL_FILE_NME")
-	public String getRealFilename() {
-		return realFilename;
+	@Column(name = "ATTM_INFO_FILE_NME")
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setRealFilename(String realFilename) {
-		this.realFilename = realFilename;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
-	@Column(name = "ATTM_INFO_PYL_FILE_NME")
-	public String getPhysicalFilename() {
-		return physicalFilename;
+	@Column(name = "ATTM_INFO_FILE_PTH")
+	public String getFilePath() {
+		return filePath;
 	}
 
-	public void setPhysicalFilename(String physicalFilename) {
-		this.physicalFilename = physicalFilename;
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	@Column(name = "ATTM_INFO_CMT")

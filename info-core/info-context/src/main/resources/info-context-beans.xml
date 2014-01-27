@@ -91,11 +91,9 @@
 		<property name="target" ref="attachmentServiceTarget" />
 		<property name="interceptorNames">
 			<list>
-				<value>validateUploadImageAdvisor</value>
 				<value>validateUploadAttchmentAdvisor</value>
 				<value>validateDownloadAttmPermissionAdvisor</value>
 				<value>increaseUploadAttmPointsAdvisor</value>
-				<value>increaseUploadImagePointsAdvisor</value>
 			</list>
 		</property>
 		<property name="proxyInterfaces" value="com.vertonur.dms.AttachmentService" />

@@ -24,7 +24,7 @@ public class AttachmentConfig implements Serializable {
 	private long maxSize;
 	private boolean attmtEnabled;
 	private boolean downloadEnabled;
-	private String thumbPrefix;
+	private String thumbSuffix;
 	private int thumbWidth;
 	private int thumbHeight;
 	private boolean thumbEnabled;
@@ -153,11 +153,12 @@ public class AttachmentConfig implements Serializable {
 		this.bcsHost = bcsHost;
 	}
 
-	public String getThumbPrefix() {
-		return thumbPrefix;
+	@Column(name = "ATTM_CNG_THMB_SFFX")
+	public String getThumbSuffix() {
+		return thumbSuffix;
 	}
 
-	public void setThumbPrefix(String thumbPrefix) {
-		this.thumbPrefix = thumbPrefix;
+	public void setThumbSuffix(String thumbSuffix) {
+		this.thumbSuffix = thumbSuffix;
 	}
 }

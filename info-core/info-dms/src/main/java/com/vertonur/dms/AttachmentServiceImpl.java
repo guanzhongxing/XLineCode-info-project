@@ -43,20 +43,24 @@ public class AttachmentServiceImpl extends GenericService implements
 		attmInfoDao = manager.getAttachmentInfoDAO();
 	}
 
+	@Override
 	public AttachmentConfig getSysAttmConfig() {
 		AttachmentConfig config = new RuntimeParameterServiceImpl()
 				.getAttachmentConfig();
 		return config;
 	}
 
+	@Override
 	public AttachmentConfig getAttmConfigById(int id) {
 		return attachmentDAO.getAttmConfigById(id);
 	}
 
+	@Override
 	public Attachment getAttmById(int attmId) {
 		return attachmentDAO.getAttmById(attmId);
 	}
 
+	@Override
 	public void updateAttachment(Attachment attm) {
 		attachmentDAO.updateAttachment(attm);
 	}
@@ -65,23 +69,55 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attachmentDAO.saveAttachment(attm);
 	}
 
+	@Override
 	public Integer saveAttachmentInfo(AttachmentInfo attmInfo) {
 		return attmInfoDao.saveAttachmentInfo(attmInfo);
 	}
 
 	@Override
 	public void deleteAttachment(Attachment attm) {
+		AttachmentInfo info = attm.getAttmInfo();
+		if (AttachmentType.BCS.equals(info.getAttachmentType())) {
+			deleteBcsAttachment(info);
+		} else if (AttachmentType.LOCAL.equals(info.getAttachmentType())) {
+			String filePath = info.getFilePath();
+			File attachment = new File(filePath);
+			attachment.delete();
+
+			String mainTpye = info.getMimeType().split("/")[0];
+			if (mainTpye.equals("image")
+					&& !FileType.EMBEDDED_IMAGE.equals(info.getFileType())) {
+				AttachmentConfig attachmentConfig = getSysAttmConfig();
+				String thumbPath = filePath + attachmentConfig.getThumbSuffix();
+				File thumb = new File(thumbPath);
+				thumb.delete();
+			}
+		}
 		attachmentDAO.deleteAttachment(attm);
+	}
+
+	private void deleteBcsAttachment(AttachmentInfo attachmentInfo) {
+		AttachmentConfig attachmentConfig = getSysAttmConfig();
+		BCSCredentials credentials = new BCSCredentials(
+				attachmentConfig.getBcsAccessKey(),
+				attachmentConfig.getBcsSecretKey());
+		BaiduBCS baiduBCS = new BaiduBCS(credentials,
+				attachmentConfig.getBcsHost());
+		baiduBCS.setDefaultEncoding("UTF-8"); // Default UTF-8
+
+		baiduBCS.deleteObject(attachmentConfig.getBcsBucket(),
+				attachmentInfo.getFilePath());
 	}
 
 	// TODO:make setUploadConfirmed private and add reflection code to set
 	// confirmed to true
 	@Override
-	public void confirmEmbeddedImageUpload(AbstractInfo holder, Attachment attm) {
-		AttachmentInfo info = attm.getAttmInfo();
+	public void confirmEmbeddedImageUpload(AbstractInfo holder, int attachmentId) {
+		Attachment attachment = attachmentDAO.getAttmById(attachmentId);
+		AttachmentInfo info = attachment.getAttmInfo();
 		info.setUploadConfirmed(true);
-		attm.setAttmHolder(holder);
-		updateAttachment(attm);
+		attachment.setAttmHolder(holder);
+		updateAttachment(attachment);
 	}
 
 	@Override
@@ -104,26 +140,10 @@ public class AttachmentServiceImpl extends GenericService implements
 			String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException {
 
-		Attachment attachment = uploadAttchment(attachmentType, inputStream,
-				mimeType, uploadRoot, fileName, fileSize, false, null, user,
-				null);
+		Attachment attachment = handleAttchmentUpload(attachmentType,
+				FileType.EMBEDDED_IMAGE, inputStream, mimeType, uploadRoot,
+				fileName, fileSize, null, user, null);
 		attachment.getAttmInfo().setFileType(FileType.EMBEDDED_IMAGE);
-		updateAttachment(attachment);
-
-		return attachment;
-	}
-
-	public Attachment uploadImage(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, String attmComment, User user,
-			AbstractInfo info) throws AttachmentSizeExceedException,
-			IOException {
-
-		Attachment attachment = uploadAttchment(attachmentType, inputStream,
-				mimeType, uploadRoot, fileName, fileSize, true, attmComment,
-				user, info);
-		attachment.getAttmInfo().setFileType(FileType.FILE);
-		attachment.getAttmInfo().setUploadConfirmed(true);
 		updateAttachment(attachment);
 
 		return attachment;
@@ -134,9 +154,9 @@ public class AttachmentServiceImpl extends GenericService implements
 			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException {
-		Attachment attachment = uploadAttchment(attachmentType, inputStream,
-				mimeType, uploadRoot, fileName, fileSize, false, attmComment,
-				user, info);
+		Attachment attachment = handleAttchmentUpload(attachmentType,
+				FileType.FILE, inputStream, mimeType, uploadRoot, fileName,
+				fileSize, attmComment, user, info);
 		attachment.getAttmInfo().setFileType(FileType.FILE);
 		attachment.getAttmInfo().setUploadConfirmed(true);
 		updateAttachment(attachment);
@@ -144,9 +164,9 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attachment;
 	}
 
-	private Attachment uploadAttchment(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, boolean generateThumb,
+	private Attachment handleAttchmentUpload(AttachmentType attachmentType,
+			FileType fileType, InputStream inputStream, String mimeType,
+			String uploadRoot, String fileName, long fileSize,
 			String attmComment, User user, AbstractInfo info)
 			throws AttachmentSizeExceedException, IOException {
 		AttachmentConfig attachmentConfig = getSysAttmConfig();
@@ -160,35 +180,34 @@ public class AttachmentServiceImpl extends GenericService implements
 				+ fileName;
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-		String tmp = mainTpye + "/" + format.format(uploadDate.getTime());
-		String fullPath = uploadRoot + "/" + tmp;
+		String filePath = uploadRoot + "/" + mainTpye + "/"
+				+ format.format(uploadDate.getTime());
 
 		AttachmentInfo attmInfo = new AttachmentInfo();
 		attmInfo.setAttachmentType(attachmentType);
 		attmInfo.setMimeType(mimeType);
 		attmInfo.setFilesize(fileSize);
-		attmInfo.setRealFilename(realFileName);
-		attmInfo.setPhysicalFilename(tmp + "/" + realFileName);
+		attmInfo.setFileName(realFileName);
+		attmInfo.setFilePath(filePath + "/" + realFileName);
 		attmInfo.setUploadTime(uploadDate.getTime());
 		attmInfo.setComment(attmComment);
 
 		Date startTime = new Date();
 		if (AttachmentType.LOCAL.equals(attachmentType)) {
-			inputStream = upload2Local(inputStream, fullPath, realFileName);
-			if (mainTpye.equals("image") && generateThumb) {
+			inputStream = upload2Local(inputStream, filePath, realFileName);
+			if (mainTpye.equals("image") && FileType.FILE.equals(fileType)) {
 				attmInfo.setHasThumb(true);
 				String extension = fileName.split("\\.")[1];
 				UploadedImageHandler.upload(
 						extension,
 						inputStream,
-						fullPath + "/" + realFileName
-								+ attachmentConfig.getThumbPrefix(),
+						filePath + "/" + realFileName
+								+ attachmentConfig.getThumbSuffix(),
 						attachmentConfig.getThumbWidth(),
 						attachmentConfig.getThumbHeight());
 			}
-
 		} else {
-			String downloadUrl = upload2Bcs(inputStream, fullPath + "/"
+			String downloadUrl = upload2Bcs(inputStream, filePath + "/"
 					+ realFileName, mimeType, fileSize);
 			attmInfo.setDownloadUrl(downloadUrl);
 		}
@@ -205,13 +224,13 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attm;
 	}
 
-	private InputStream upload2Local(InputStream inputStream,
-			String phisicalPath, String realFileName) throws IOException {
-		File diskFile = new File(phisicalPath);
+	private InputStream upload2Local(InputStream inputStream, String filePath,
+			String realFileName) throws IOException {
+		File diskFile = new File(filePath);
 		diskFile.mkdirs();
 
-		phisicalPath = phisicalPath + File.separator + realFileName;
-		OutputStream outputStream = new FileOutputStream(phisicalPath);
+		filePath = filePath + File.separator + realFileName;
+		OutputStream outputStream = new FileOutputStream(filePath);
 		byte[] buffer = new byte[32768];
 		int n = 0;
 
@@ -223,12 +242,12 @@ public class AttachmentServiceImpl extends GenericService implements
 		outputStream.flush();
 		outputStream.close();
 
-		diskFile = new File(phisicalPath);
+		diskFile = new File(filePath);
 		inputStream = new FileInputStream(diskFile);
 		return inputStream;
 	}
 
-	private String upload2Bcs(InputStream inputStream, String phisicalPath,
+	private String upload2Bcs(InputStream inputStream, String filePath,
 			String contentType, long fileSize) {
 		AttachmentConfig attachmentConfig = getSysAttmConfig();
 		BCSCredentials credentials = new BCSCredentials(
@@ -242,13 +261,13 @@ public class AttachmentServiceImpl extends GenericService implements
 		objectMetadata.setContentLength(fileSize);
 
 		String bucket = attachmentConfig.getBcsBucket();
-		PutObjectRequest request = new PutObjectRequest(bucket, phisicalPath,
+		PutObjectRequest request = new PutObjectRequest(bucket, filePath,
 				inputStream, objectMetadata);
 		BaiduBCSResponse<ObjectMetadata> response = baiduBCS.putObject(request);
 		response.getResult();
 
 		GenerateUrlRequest generateUrlRequest = new GenerateUrlRequest(
-				HttpMethodName.GET, bucket, phisicalPath);
+				HttpMethodName.GET, bucket, filePath);
 		String downloadableUrl = baiduBCS.generateUrl(generateUrlRequest);
 
 		return downloadableUrl;

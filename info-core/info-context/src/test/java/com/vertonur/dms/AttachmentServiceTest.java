@@ -2,11 +2,13 @@ package com.vertonur.dms;
 
 import static junit.framework.Assert.*;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import javax.security.auth.login.LoginException;
 
+import org.hibernate.ObjectNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,10 +59,22 @@ public class AttachmentServiceTest {
 		uploadAttachment(AttachmentType.LOCAL, false, false);
 	}
 
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteAttachment() throws LoginException,
+			URISyntaxException {
+		deleteAttachment(AttachmentType.LOCAL, false, false);
+	}
+
 	@Test
 	public void testUploadAttachment2Bcs() throws LoginException,
 			URISyntaxException {
 		uploadAttachment(AttachmentType.BCS, false, false);
+	}
+
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteBcsAttachment() throws LoginException,
+			URISyntaxException {
+		deleteAttachment(AttachmentType.BCS, false, false);
 	}
 
 	@Test
@@ -69,9 +83,20 @@ public class AttachmentServiceTest {
 		uploadAttachment(AttachmentType.LOCAL, true, false);
 	}
 
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteLocalImage() throws LoginException,
+			URISyntaxException {
+		deleteAttachment(AttachmentType.LOCAL, true, false);
+	}
+
 	@Test
 	public void testUploadImage2Bcs() throws LoginException, URISyntaxException {
 		uploadAttachment(AttachmentType.BCS, true, false);
+	}
+
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteBcsImage() throws LoginException, URISyntaxException {
+		deleteAttachment(AttachmentType.BCS, true, false);
 	}
 
 	@Test
@@ -88,17 +113,22 @@ public class AttachmentServiceTest {
 		InfoService infoService = (InfoService) service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
 		Info info = infoService.getInfoById(categoryId, infoId);
-		Attachment attachment = attachmentService.getAttmById(id);
-		attachmentService.confirmEmbeddedImageUpload(info, attachment);
+		attachmentService.confirmEmbeddedImageUpload(info, id);
 		service.commitTransaction();
 
 		service.beginTransaction();
 		id = saver.getAttachmentId();
 		attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
-		attachment = attachmentService.getAttmById(id);
+		Attachment attachment = attachmentService.getAttmById(id);
 		assertEquals(true, attachment.getAttmInfo().isUploadConfirmed());
 		service.commitTransaction();
+	}
+
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteLocalEmbeddedImage() throws LoginException,
+			URISyntaxException {
+		deleteAttachment(AttachmentType.LOCAL, false, true);
 	}
 
 	@Test
@@ -130,17 +160,22 @@ public class AttachmentServiceTest {
 		InfoService infoService = (InfoService) service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
 		Info info = infoService.getInfoById(categoryId, infoId);
-		Attachment attachment = attachmentService.getAttmById(id);
-		attachmentService.confirmEmbeddedImageUpload(info, attachment);
+		attachmentService.confirmEmbeddedImageUpload(info, id);
 		service.commitTransaction();
 
 		service.beginTransaction();
 		id = saver.getAttachmentId();
 		attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
-		attachment = attachmentService.getAttmById(id);
+		Attachment attachment = attachmentService.getAttmById(id);
 		assertEquals(true, attachment.getAttmInfo().isUploadConfirmed());
 		service.commitTransaction();
+	}
+
+	@Test(expected = ObjectNotFoundException.class)
+	public void testDeleteBcsEmbeddedImage() throws LoginException,
+			URISyntaxException {
+		deleteAttachment(AttachmentType.BCS, false, true);
 	}
 
 	@Test
@@ -195,6 +230,8 @@ public class AttachmentServiceTest {
 		Attachment attachment = attachmentService.getAttmById(id);
 		AttachmentInfo info = attachment.getAttmInfo();
 		assertEquals(attachmentType, info.getAttachmentType());
+		assertNotNull(info.getFileName());
+		assertNotNull(info.getFilePath());
 		if (isEmbeddedImage)
 			assertEquals(FileType.EMBEDDED_IMAGE, info.getFileType());
 		else
@@ -204,6 +241,45 @@ public class AttachmentServiceTest {
 					info.getFilesize());
 		else
 			assertEquals(DataGenerator.TXT_FILE_SIZE, info.getFilesize());
+
+		if (AttachmentType.LOCAL.equals(info.getAttachmentType())) {
+			File file = new File(info.getFilePath());
+			assertTrue(file.exists());
+			if (isImage || isEmbeddedImage)
+				assertEquals(DataGenerator.ATTACHMENT_DEMO_IMAGE_SIZE,
+						file.length());
+			else
+				assertEquals(DataGenerator.TXT_FILE_SIZE, file.length());
+		}
+		service.commitTransaction();
+	}
+
+	private void deleteAttachment(AttachmentType attachmentType,
+			boolean isImage, boolean isEmbeddedImage) throws LoginException,
+			URISyntaxException {
+		uploadAttachment(attachmentType, isImage, isEmbeddedImage);
+
+		service.beginTransaction();
+		int id = saver.getAttachmentId();
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		Attachment attachment = attachmentService.getAttmById(id);
+		attachmentService.deleteAttachment(attachment);
+		service.commitTransaction();
+
+		service.beginTransaction();
+		int infoId = saver.getInfoId();
+		int categoryId = saver.getCategoryId();
+		InfoService infoService = service
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		Info info = infoService.getInfoById(categoryId, infoId);
+		assertEquals(0, info.getAttachments().size());
+
+		id = saver.getAttachmentId();
+		attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		attachment = attachmentService.getAttmById(id);
+		assertNull(attachment);
 		service.commitTransaction();
 	}
 

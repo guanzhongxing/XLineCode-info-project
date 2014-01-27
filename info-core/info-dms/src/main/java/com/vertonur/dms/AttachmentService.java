@@ -30,7 +30,7 @@ public interface AttachmentService {
 	@RolesAllowed(RoleEnum.ROLE_USER)
 	public void updateAttachment(Attachment attm);
 
-	public void confirmEmbeddedImageUpload(AbstractInfo holder, Attachment attm);
+	public void confirmEmbeddedImageUpload(AbstractInfo holder, int attachmentId);
 
 	/**
 	 * record download num of the attachment and return the downloadable url
@@ -69,7 +69,8 @@ public interface AttachmentService {
 			throws AttachmentSizeExceedException, IOException;
 
 	/**
-	 * Upload an image and generate a thumb for the image
+	 * Upload an attachment. If the attachment is an image and the
+	 * AttachmentType is LOCAL, a thumb is generated for that image
 	 * 
 	 * @param attachmentType
 	 * @param inputStream
@@ -84,13 +85,6 @@ public interface AttachmentService {
 	 * @throws AttachmentSizeExceedException
 	 * @throws IOException
 	 */
-	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
-	public Attachment uploadImage(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, String attmComment, User user,
-			AbstractInfo info) throws AttachmentSizeExceedException,
-			IOException;
-
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
 	public Attachment uploadAttchment(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String uploadRoot,

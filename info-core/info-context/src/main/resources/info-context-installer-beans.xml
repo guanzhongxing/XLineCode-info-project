@@ -65,8 +65,8 @@
 	</bean>
 
 	<bean id="attachmentInfo" class="com.vertonur.pojo.AttachmentInfo">
-		<property name="realFilename" value="defaultAvatar.jpeg" />
-		<property name="physicalFilename" value="/upload/avatar/defaultAvatar.jpeg" />
+		<property name="fileName" value="defaultAvatar.jpeg" />
+		<property name="filePath" value="/upload/avatar/defaultAvatar.jpeg" />
 		<property name="downloadUrl" value="/upload/avatar/defaultAvatar.jpeg" />
 		<property name="mimeType" value="image/jpeg" />
 		<property name="uploadConfirmed" value="true" />
