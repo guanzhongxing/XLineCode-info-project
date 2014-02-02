@@ -66,7 +66,8 @@ import com.vertonur.test.CommonDataGenerator;
 public class DataGenerator {
 	private static int USERS_NUM = 9;
 	private static int GROUPS_NUM = 9;
-	private static String ATTACHMENT_UPLOAD_IMAGE = "attachment-demo.jpg";
+	public static String ATTACHMENT_UPLOAD_IMAGE = "attachment-demo.jpg";
+	public static String UPLOAD_AVATAR = "avatar-demo.jpg";
 	public static int TXT_FILE_SIZE = 105;
 	public static int ATTACHMENT_DEMO_IMAGE_SIZE = 22377;
 
@@ -77,6 +78,7 @@ public class DataGenerator {
 	private int categoryId;
 	private int infoId;
 	private int attachmentId;
+	private int avatarId;
 	private int rankingId_1;
 	private int rankingId_2;
 	private int rankingId_3;
@@ -92,7 +94,7 @@ public class DataGenerator {
 	private int adminId = 1;
 	private int groupId;
 	private String uploadRoot;
-	private String bcsUploadRoot = "/upload/test";
+	private String bcsUploadRoot = "/upload";
 
 	public DataGenerator() throws LoginException {
 		uploadRoot = System.getProperty("user.home") + "/info-project";
@@ -943,5 +945,29 @@ public class DataGenerator {
 
 	public void setAdminId(int adminId) {
 		this.adminId = adminId;
+	}
+
+	public String getUploadRoot() {
+		return uploadRoot;
+	}
+
+	public void setUploadRoot(String uploadRoot) {
+		this.uploadRoot = uploadRoot;
+	}
+
+	public String getBcsUploadRoot() {
+		return bcsUploadRoot;
+	}
+
+	public void setBcsUploadRoot(String bcsUploadRoot) {
+		this.bcsUploadRoot = bcsUploadRoot;
+	}
+
+	public int getAvatarId() {
+		return avatarId;
+	}
+
+	public void setAvatarId(int avatarId) {
+		this.avatarId = avatarId;
 	}
 }

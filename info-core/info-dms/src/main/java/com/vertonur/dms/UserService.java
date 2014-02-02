@@ -1,11 +1,15 @@
 package com.vertonur.dms;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 
 import com.vertonur.dms.constant.RoleEnum;
+import com.vertonur.dms.exception.AttachmentSizeExceedException;
 import com.vertonur.dms.exception.InvalidOldPasswordException;
 import com.vertonur.pojo.Admin;
 import com.vertonur.pojo.Info;
@@ -14,6 +18,7 @@ import com.vertonur.pojo.PrivateMessage;
 import com.vertonur.pojo.User;
 import com.vertonur.pojo.UserReadInfo;
 import com.vertonur.pojo.UserReadPrivateMessage;
+import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.statistician.UserMsgStatistician;
 
 public interface UserService {
@@ -134,4 +139,12 @@ public interface UserService {
 	@RolesAllowed(RoleEnum.ROLE_USER)
 	public void changePassword(int userId, String oldPassword,
 			String newPassword) throws InvalidOldPasswordException;
+	
+	public void setUpAvatar(AttachmentType attachmentType,
+			InputStream inputStream, String mimeType, String avatarRoot,
+			String fileName, long fileSize, User user)
+			throws AttachmentSizeExceedException, IOException;
+
+	public void setUpDefaultAvatar(AttachmentType attachmentType,
+			String avatarRoot, User user) throws IOException, URISyntaxException;
 }

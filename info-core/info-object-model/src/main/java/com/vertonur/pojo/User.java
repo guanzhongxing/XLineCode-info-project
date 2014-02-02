@@ -76,7 +76,7 @@ public class User implements Serializable {
 		this.id = id;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "USR_AVATAR_ID")
 	public Attachment getAvatar() {
 		return avatar;

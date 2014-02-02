@@ -7,14 +7,8 @@
            http://www.springframework.org/schema/security 
 		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-	<bean id="wrapper"
-		class="com.vertonur.context.SystemContextServiceEnvironmentWrapper">
-		<constructor-arg value="com.vertonur.dao.hibernate.manager.HibernateDAOManager" />
-		<constructor-arg ref="extendedBeans" />
-		<constructor-arg ref="extendedConfigs" />
-		<constructor-arg ref="externalConfigXmls" />
-		<constructor-arg value="hibernate.cfg.xml" />
-	</bean>
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
 	<bean id="extendedBeans" class="java.util.HashSet">
 		<constructor-arg>
@@ -44,8 +38,4 @@
 
 	<bean id="systemContextService" class="com.vertonur.context.SystemContextService"
 		factory-method="init" />
-
-	<bean id="infoCoreSpringContext" factory-bean="systemContextService"
-		factory-method="getSpringContext">
-	</bean>
 </beans>

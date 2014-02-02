@@ -65,7 +65,7 @@ public class AttachmentServiceImpl extends GenericService implements
 		attachmentDAO.updateAttachment(attm);
 	}
 
-	public Integer saveAttachment(Attachment attm) {
+	protected Integer saveAttachment(Attachment attm) {
 		return attachmentDAO.saveAttachment(attm);
 	}
 
@@ -224,7 +224,7 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attm;
 	}
 
-	private InputStream upload2Local(InputStream inputStream, String filePath,
+	protected InputStream upload2Local(InputStream inputStream, String filePath,
 			String realFileName) throws IOException {
 		File diskFile = new File(filePath);
 		diskFile.mkdirs();
@@ -247,7 +247,7 @@ public class AttachmentServiceImpl extends GenericService implements
 		return inputStream;
 	}
 
-	private String upload2Bcs(InputStream inputStream, String filePath,
+	protected String upload2Bcs(InputStream inputStream, String filePath,
 			String contentType, long fileSize) {
 		AttachmentConfig attachmentConfig = getSysAttmConfig();
 		BCSCredentials credentials = new BCSCredentials(

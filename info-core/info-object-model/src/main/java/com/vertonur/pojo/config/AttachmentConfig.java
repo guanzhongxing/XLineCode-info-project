@@ -32,6 +32,7 @@ public class AttachmentConfig implements Serializable {
 	private String bcsSecretKey;
 	private String bcsBucket;
 	private String bcsHost;
+	private String bcsDefaultAvatarUrl;
 
 	private AttmCngType configTyp;
 
@@ -121,6 +122,7 @@ public class AttachmentConfig implements Serializable {
 		this.configTyp = configTyp;
 	}
 
+	@Column(name = "ATTM_CNG_BCS_ACS_KY")
 	public String getBcsAccessKey() {
 		return bcsAccessKey;
 	}
@@ -129,6 +131,7 @@ public class AttachmentConfig implements Serializable {
 		this.bcsAccessKey = bcsAccessKey;
 	}
 
+	@Column(name = "ATTM_CNG_BCS_SCRT_KY")
 	public String getBcsSecretKey() {
 		return bcsSecretKey;
 	}
@@ -137,6 +140,7 @@ public class AttachmentConfig implements Serializable {
 		this.bcsSecretKey = bcsSecretKey;
 	}
 
+	@Column(name = "ATTM_CNG_BCS_BCKT")
 	public String getBcsBucket() {
 		return bcsBucket;
 	}
@@ -145,12 +149,22 @@ public class AttachmentConfig implements Serializable {
 		this.bcsBucket = bcsBucket;
 	}
 
+	@Column(name = "ATTM_CNG_BCS_HST")
 	public String getBcsHost() {
 		return bcsHost;
 	}
 
 	public void setBcsHost(String bcsHost) {
 		this.bcsHost = bcsHost;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_DFT_AVTR_URL")
+	public String getBcsDefaultAvatarUrl() {
+		return bcsDefaultAvatarUrl;
+	}
+
+	public void setBcsDefaultAvatarUrl(String bcsDefaultAvatarUrl) {
+		this.bcsDefaultAvatarUrl = bcsDefaultAvatarUrl;
 	}
 
 	@Column(name = "ATTM_CNG_THMB_SFFX")

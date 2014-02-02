@@ -32,7 +32,9 @@ import com.vertonur.dms.ExtendedBeanService;
 import com.vertonur.dms.GroupService;
 import com.vertonur.dms.ModeratorManager;
 import com.vertonur.dms.RuntimeParameterService;
+import com.vertonur.dms.UserService;
 import com.vertonur.dms.constant.ServiceEnum;
+import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.ExtendedBean;
 import com.vertonur.pojo.Info;
@@ -68,6 +70,8 @@ public class SystemContextService {
 	private static String daoManagerImplClass;
 	private static String daoConfigFileName;
 	private static String jaasConfigFile;
+	private static AttachmentType uploadFileSystem;
+	private static String avatarRoot;
 	private static Set<Class<? extends Config>> extendedConfigs;
 	private static Set<Class<? extends ExtendedBean>> extendedBeans;
 	private static Set<String> externalConfigXmls;
@@ -111,7 +115,9 @@ public class SystemContextService {
 	private void initSystemData() throws Exception {
 		SystemDataInitializer initializer = (SystemDataInitializer) context
 				.getBean("systemDataInitializer");
-		initializer.init(getDaoManager(), passwordEncoder);
+		UserService userService = (UserService) context.getBean("userService");
+		initializer.init(getDaoManager(), passwordEncoder, userService,
+				uploadFileSystem, avatarRoot);
 	}
 
 	private void setUpGuestData() {
@@ -522,6 +528,22 @@ public class SystemContextService {
 
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
+	}
+
+	public static AttachmentType getUploadFileSystem() {
+		return uploadFileSystem;
+	}
+
+	public static void setUploadFileSystem(AttachmentType uploadFileSystem) {
+		SystemContextService.uploadFileSystem = uploadFileSystem;
+	}
+
+	public static String getAvatarRoot() {
+		return avatarRoot;
+	}
+
+	public static void setAvatarRoot(String avatarRoot) {
+		SystemContextService.avatarRoot = avatarRoot;
 	}
 
 	public class SystemState {
