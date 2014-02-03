@@ -12,6 +12,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:i18n/ClassResources_zh.properties</value>
+				<value>classpath:runtime.properties</value>
 			</list>
 		</property>
 	</bean>

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.vertonur.pojo.AttachmentInfo.AttachmentType;
+
 @Entity(name = "INFO_COR_ATTM_CNG")
 public class AttachmentConfig implements Serializable {
 
@@ -33,6 +35,10 @@ public class AttachmentConfig implements Serializable {
 	private String bcsBucket;
 	private String bcsHost;
 	private String bcsDefaultAvatarUrl;
+
+	private AttachmentType uploadFileSystem;
+	private String avatarRoot;
+	private String defaultAvatarURI;
 
 	private AttmCngType configTyp;
 
@@ -158,7 +164,7 @@ public class AttachmentConfig implements Serializable {
 		this.bcsHost = bcsHost;
 	}
 
-	@Column(name = "ATTM_CNG_BCS_DFT_AVTR_URL")
+	@Column(name = "ATTM_CNG_BCS_DFT_AVTR_URL", length = 600)
 	public String getBcsDefaultAvatarUrl() {
 		return bcsDefaultAvatarUrl;
 	}
@@ -174,5 +180,32 @@ public class AttachmentConfig implements Serializable {
 
 	public void setThumbSuffix(String thumbSuffix) {
 		this.thumbSuffix = thumbSuffix;
+	}
+
+	@Column(name = "ATTM_CNG_UPLD_FL_SYS")
+	public AttachmentType getUploadFileSystem() {
+		return uploadFileSystem;
+	}
+
+	public void setUploadFileSystem(AttachmentType uploadFileSystem) {
+		this.uploadFileSystem = uploadFileSystem;
+	}
+
+	@Column(name = "ATTM_CNG_AVTR_RT")
+	public String getAvatarRoot() {
+		return avatarRoot;
+	}
+
+	public void setAvatarRoot(String avatarRoot) {
+		this.avatarRoot = avatarRoot;
+	}
+
+	@Column(name = "ATTM_CNG_DFT_AVTR_URI")
+	public String getDefaultAvatarURI() {
+		return defaultAvatarURI;
+	}
+
+	public void setDefaultAvatarURI(String defaultAvatarURI) {
+		this.defaultAvatarURI = defaultAvatarURI;
 	}
 }

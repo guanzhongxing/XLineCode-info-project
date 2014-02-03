@@ -13,10 +13,10 @@ import com.vertonur.dao.api.UserDAO;
 import com.vertonur.dao.manager.DAOManager;
 import com.vertonur.dms.UserService;
 import com.vertonur.pojo.Admin;
-import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.Moderator;
 import com.vertonur.pojo.User;
+import com.vertonur.pojo.config.AttachmentConfig;
 import com.vertonur.pojo.security.Group;
 import com.vertonur.pojo.security.Role;
 import com.vertonur.pojo.statistician.SystemStatistician;
@@ -26,21 +26,19 @@ public class SystemDataInitializer {
 	private User guest;
 	private Admin superAdmin;
 	private Moderator moderator;
-	private AttachmentInfo attachmentInfo;
 	private AuthorityInitializer authorityInitializer;
 	private RuntimeParameterInitializer runtimeParameterInitializer;
 	private BackendPermissionInitializer backendPermissionInitializer;
 
 	public void init(DAOManager daoManager, PasswordEncoder passwordEncoder,
-			UserService userService, AttachmentType uploadFileSystem,
-			String avatarRoot) throws IllegalAccessException,
+			UserService userService) throws IllegalAccessException,
 			InvocationTargetException, IOException, URISyntaxException {
 		AdminDAO adminDao = daoManager.getAdminDAO();
 		UserDAO userDao = daoManager.getUserDAO();
 		long num = adminDao.getAdminNum();
 		if (num == 0) {
 			runtimeParameterInitializer.init(daoManager);
-			
+
 			Set<Role> defaultUserRoles = authorityInitializer
 					.initDefaultUserRoles(daoManager);
 			Group defaultUserGroup = authorityInitializer.initDefaultUserGroup(
@@ -62,6 +60,10 @@ public class SystemDataInitializer {
 			password = passwordEncoder.encodePassword(password, id);
 			superAdmin.setPassword(password);
 
+			AttachmentConfig config = runtimeParameterInitializer
+					.getAttachmentConfig();
+			AttachmentType uploadFileSystem = config.getUploadFileSystem();
+			String avatarRoot = config.getAvatarRoot();
 			userService.setUpDefaultAvatar(uploadFileSystem, avatarRoot,
 					superAdmin);
 			userDao.updateUser(superAdmin);
@@ -86,7 +88,7 @@ public class SystemDataInitializer {
 					.setDefaultGuestGroupId(defaultGuestGroup.getId());
 			systemStatistician.setDefaultUserGroupId(defaultUserGroup.getId());
 			systemStatisticianDAO.updateSystemStatistician(systemStatistician);
-			
+
 			backendPermissionInitializer.init(daoManager);
 		}
 	}
@@ -132,13 +134,5 @@ public class SystemDataInitializer {
 	public void setBackendPermissionInitializer(
 			BackendPermissionInitializer backendPermissionInitializer) {
 		this.backendPermissionInitializer = backendPermissionInitializer;
-	}
-
-	public AttachmentInfo getAttachmentInfo() {
-		return attachmentInfo;
-	}
-
-	public void setAttachmentInfo(AttachmentInfo attachmentInfo) {
-		this.attachmentInfo = attachmentInfo;
 	}
 }

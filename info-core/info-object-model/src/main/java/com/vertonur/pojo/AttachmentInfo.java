@@ -141,7 +141,7 @@ public class AttachmentInfo {
 		this.attm = attm;
 	}
 
-	@Column(name = "ATTM_INFO_DOWNLOAD_URL")
+	@Column(name = "ATTM_INFO_DOWNLOAD_URL", length = 600)
 	public String getDownloadUrl() {
 		return downloadUrl;
 	}

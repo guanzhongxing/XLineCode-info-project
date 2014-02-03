@@ -44,7 +44,7 @@ public interface UserService {
 	public void updateModerator(Moderator moderator);
 
 	public User getUserById(int userId);
-	
+
 	public User getUserByEmail(String email);
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
@@ -139,12 +139,37 @@ public interface UserService {
 	@RolesAllowed(RoleEnum.ROLE_USER)
 	public void changePassword(int userId, String oldPassword,
 			String newPassword) throws InvalidOldPasswordException;
-	
+
+	/**
+	 * Set up a new avatar. Delete the previous uploaded avatar if that avatar
+	 * is not the default one.
+	 * 
+	 * @param attachmentType
+	 * @param inputStream
+	 * @param mimeType
+	 * @param avatarRoot
+	 * @param fileName
+	 * @param fileSize
+	 * @param user
+	 * @throws AttachmentSizeExceedException
+	 * @throws IOException
+	 */
 	public void setUpAvatar(AttachmentType attachmentType,
 			InputStream inputStream, String mimeType, String avatarRoot,
 			String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException;
 
+	/**
+	 * Set up the default avatar for the passed in user. Delete the previous
+	 * uploaded avatar if that avatar is not the default one.
+	 * 
+	 * @param attachmentType
+	 * @param avatarRoot
+	 * @param user
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	public void setUpDefaultAvatar(AttachmentType attachmentType,
-			String avatarRoot, User user) throws IOException, URISyntaxException;
+			String avatarRoot, User user) throws IOException,
+			URISyntaxException;
 }

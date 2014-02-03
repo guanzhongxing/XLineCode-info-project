@@ -16,7 +16,6 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.baidu.inf.iis.bcs.BaiduBCS;
 import com.baidu.inf.iis.bcs.auth.BCSCredentials;
-import com.vertonur.Constants;
 import com.vertonur.dao.api.AdminDAO;
 import com.vertonur.dao.api.AttachmentDAO;
 import com.vertonur.dao.api.InfoDAO;
@@ -269,17 +268,22 @@ public class UserServiceImpl extends GenericService implements UserService {
 			String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException {
 
-		deleteUploadedAvatar(user.getAvatar());
+		Attachment avatar = user.getAvatar();
 		Attachment attachment = attachmentService.uploadAttchment(
 				attachmentType, inputStream, mimeType, avatarRoot, fileName,
 				fileSize, null, user, null);
 		user.setAvatar(attachment);
+
+		deleteUploadedAvatar(avatar);
 	}
 
 	private void deleteUploadedAvatar(Attachment avatar) {
 		if (avatar != null) {
+			AttachmentConfig attachmentConfig = attachmentService
+					.getSysAttmConfig();
 			AttachmentInfo info = avatar.getAttmInfo();
-			if (!Constants.DEFAULT_AVATAR.equals(info.getFileName()))
+			if (!attachmentConfig.getDefaultAvatarURI().contains(
+					info.getFileName()))
 				attachmentService.deleteAttachment(avatar);
 			else
 				attachmentDAO.deleteAttachment(avatar);
@@ -292,9 +296,11 @@ public class UserServiceImpl extends GenericService implements UserService {
 			String avatarRoot, User user) throws IOException,
 			URISyntaxException {
 
-		deleteUploadedAvatar(user.getAvatar());
+		Attachment avatar = user.getAvatar();
+		AttachmentConfig attachmentConfig = attachmentService
+				.getSysAttmConfig();
 		URL url = Thread.currentThread().getContextClassLoader()
-				.getResource(Constants.DEFAULT_AVATAR);
+				.getResource(attachmentConfig.getDefaultAvatarURI());
 		File file = new File(url.toURI());
 		InputStream inputStream = new FileInputStream(file);
 		long fileSize = file.length();
@@ -304,8 +310,9 @@ public class UserServiceImpl extends GenericService implements UserService {
 		attmInfo.setAttachmentType(attachmentType);
 		attmInfo.setFilesize(fileSize);
 		attmInfo.setMimeType(mimeType);
-		attmInfo.setFileName(Constants.DEFAULT_AVATAR);
-		String filePath = avatarRoot + "/" + Constants.DEFAULT_AVATAR;
+		String fileName = file.getName();
+		attmInfo.setFileName(fileName);
+		String filePath = avatarRoot + "/" + fileName;
 		attmInfo.setFilePath(filePath);
 		attmInfo.setUploadConfirmed(true);
 		attmInfo.setFileType(FileType.FILE);
@@ -314,10 +321,9 @@ public class UserServiceImpl extends GenericService implements UserService {
 			File defaultAvatar = new File(filePath);
 			if (!defaultAvatar.exists())
 				inputStream = attachmentService.upload2Local(inputStream,
-						avatarRoot, Constants.DEFAULT_AVATAR);
+						avatarRoot, fileName);
 		} else if (AttachmentType.BCS.equals(attachmentType)) {
-			AttachmentConfig attachmentConfig = attachmentService
-					.getSysAttmConfig();
+
 			BCSCredentials credentials = new BCSCredentials(
 					attachmentConfig.getBcsAccessKey(),
 					attachmentConfig.getBcsSecretKey());
@@ -341,5 +347,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 		attachment.setAttmInfo(attmInfo);
 		attachmentService.saveAttachment(attachment);
 		user.setAvatar(attachment);
+
+		deleteUploadedAvatar(avatar);
 	}
 }

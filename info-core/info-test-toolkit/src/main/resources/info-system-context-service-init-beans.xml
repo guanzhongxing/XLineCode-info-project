@@ -15,8 +15,6 @@
 		<constructor-arg ref="extendedConfigs" />
 		<constructor-arg ref="externalConfigXmls" />
 		<constructor-arg value="hibernate.cfg.xml" />
-		<constructor-arg value="BCS" />
-		<constructor-arg value="/upload/avatar" />
 	</bean>
 	
 	<import resource="info-system-context-service-beans.xml" />
