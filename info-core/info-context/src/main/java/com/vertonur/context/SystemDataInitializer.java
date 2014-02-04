@@ -13,10 +13,8 @@ import com.vertonur.dao.api.UserDAO;
 import com.vertonur.dao.manager.DAOManager;
 import com.vertonur.dms.UserService;
 import com.vertonur.pojo.Admin;
-import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.Moderator;
 import com.vertonur.pojo.User;
-import com.vertonur.pojo.config.AttachmentConfig;
 import com.vertonur.pojo.security.Group;
 import com.vertonur.pojo.security.Role;
 import com.vertonur.pojo.statistician.SystemStatistician;
@@ -60,12 +58,7 @@ public class SystemDataInitializer {
 			password = passwordEncoder.encodePassword(password, id);
 			superAdmin.setPassword(password);
 
-			AttachmentConfig config = runtimeParameterInitializer
-					.getAttachmentConfig();
-			AttachmentType uploadFileSystem = config.getUploadFileSystem();
-			String avatarRoot = config.getAvatarRoot();
-			userService.setUpDefaultAvatar(uploadFileSystem, avatarRoot,
-					superAdmin);
+			userService.setUpDefaultAvatar(superAdmin);
 			userDao.updateUser(superAdmin);
 
 			Group defaultGuestGroup = authorityInitializer
@@ -76,7 +69,7 @@ public class SystemDataInitializer {
 			password = passwordEncoder.encodePassword(password, id);
 			guest.setPassword(password);
 
-			userService.setUpDefaultAvatar(uploadFileSystem, avatarRoot, guest);
+			userService.setUpDefaultAvatar(guest);
 			userDao.updateUser(guest);
 
 			SystemStatisticianDAO systemStatisticianDAO = daoManager

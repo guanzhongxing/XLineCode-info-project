@@ -18,7 +18,6 @@ import com.vertonur.pojo.PrivateMessage;
 import com.vertonur.pojo.User;
 import com.vertonur.pojo.UserReadInfo;
 import com.vertonur.pojo.UserReadPrivateMessage;
-import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.statistician.UserMsgStatistician;
 
 public interface UserService {
@@ -154,8 +153,7 @@ public interface UserService {
 	 * @throws AttachmentSizeExceedException
 	 * @throws IOException
 	 */
-	public void setUpAvatar(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String avatarRoot,
+	public void setUpAvatar(InputStream inputStream, String mimeType,
 			String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException;
 
@@ -169,7 +167,6 @@ public interface UserService {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public void setUpDefaultAvatar(AttachmentType attachmentType,
-			String avatarRoot, User user) throws IOException,
+	public void setUpDefaultAvatar(User user) throws IOException,
 			URISyntaxException;
 }

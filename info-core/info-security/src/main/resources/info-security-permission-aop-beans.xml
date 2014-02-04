@@ -493,7 +493,7 @@
 				<ref bean="uploadAttmPermissionTemplate" />
 			</set>
 		</property>
-		<property name="paramIndex" value="8" />
+		<property name="paramIndex" value="6" />
 	</bean>
 
 	<bean id="validateUploadAttmPermissionAdvice"
@@ -502,15 +502,15 @@
 		<property name="dataSource" ref="validateUploadAttmPermissionDataSource" />
 	</bean>
 
-	<bean id="uploadAttchmentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+	<bean id="uploadAttachmentPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
 		<property name="pattern"
-			value="com\.vertonur\.dms\.AttachmentService.uploadAttchment" />
+			value="com\.vertonur\.dms\.AttachmentService.uploadAttachment" />
 	</bean>
 
 	<bean id="validateUploadAttchmentAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
 		scope="prototype">
 		<property name="advice" ref="validateUploadAttmPermissionAdvice" />
-		<property name="pointcut" ref="uploadAttchmentPointcut" />
+		<property name="pointcut" ref="uploadAttachmentPointcut" />
 	</bean>
 
 	<bean id="validateDownloadAttmPermissionDataSource"

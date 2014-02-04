@@ -40,11 +40,9 @@ public class UserAvatarTest {
 		saver = new DataGenerator();
 		config = service.getDataManagementService(
 				ServiceEnum.RUNTIME_PARAMETER_SERVICE).getAttachmentConfig();
-		if (AttachmentType.LOCAL.equals(attachmentType)) {
-			config.setUploadFileSystem(AttachmentType.LOCAL);
-			config.setAvatarRoot(System.getProperty("user.home")
-					+ "/info-project/upload/avatar");
-			config.setDefaultAvatarURI("defaultAvatar.jpeg");
+		if (AttachmentType.BCS.equals(attachmentType)) {
+			config.setUploadFileSystem(AttachmentType.BCS);
+			config.setAvatarRoot("/upload/avatar");
 		}
 		service.commitTransaction();
 	}
@@ -76,6 +74,13 @@ public class UserAvatarTest {
 		setUp(AttachmentType.BCS);
 
 		assertEquals(AttachmentType.BCS, config.getUploadFileSystem());
+		service.beginTransaction();
+		UserService userService = service
+				.getDataManagementService(ServiceEnum.USER_SERVICE);
+		int id = saver.getAdminId();
+		Admin admin = userService.getAdminById(id);
+		userService.setUpDefaultAvatar(admin);
+		service.commitTransaction();
 		testSetUpUserDefaultAvatar();
 	}
 
@@ -102,14 +107,6 @@ public class UserAvatarTest {
 		setUp(AttachmentType.LOCAL);
 
 		assertEquals(AttachmentType.LOCAL, config.getUploadFileSystem());
-		service.beginTransaction();
-		UserService userService = service
-				.getDataManagementService(ServiceEnum.USER_SERVICE);
-		int id = saver.getAdminId();
-		Admin admin = userService.getAdminById(id);
-		userService.setUpDefaultAvatar(config.getUploadFileSystem(),
-				config.getAvatarRoot(), admin);
-		service.commitTransaction();
 		testSetUpUserDefaultAvatar();
 	}
 
@@ -136,8 +133,7 @@ public class UserAvatarTest {
 		FileInputStream inputStream = new FileInputStream(file);
 		FileNameMap fileNameMap = URLConnection.getFileNameMap();
 		String mimeType = fileNameMap.getContentTypeFor(file.getName());
-		userService.setUpAvatar(config.getUploadFileSystem(), inputStream,
-				mimeType, config.getAvatarRoot(), file.getName(),
+		userService.setUpAvatar(inputStream, mimeType, file.getName(),
 				file.length(), admin);
 		service.commitTransaction();
 
@@ -162,8 +158,7 @@ public class UserAvatarTest {
 				.getDataManagementService(ServiceEnum.USER_SERVICE);
 		admin = userService.getAdminById(id);
 		avatar = admin.getAvatar();
-		userService.setUpDefaultAvatar(config.getUploadFileSystem(),
-				config.getAvatarRoot(), admin);
+		userService.setUpDefaultAvatar(admin);
 		service.commitTransaction();
 
 		service.beginTransaction();

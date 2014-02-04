@@ -86,10 +86,6 @@ public class RuntimeParameterInitializer {
 		this.moderationConfig = moderationConfig;
 	}
 
-	public AttachmentConfig getAttachmentConfig() {
-		return attachmentConfig;
-	}
-
 	public void setAttachmentConfig(AttachmentConfig attachmentConfig) {
 		this.attachmentConfig = attachmentConfig;
 	}

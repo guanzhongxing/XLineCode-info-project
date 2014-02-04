@@ -263,15 +263,17 @@ public class UserServiceImpl extends GenericService implements UserService {
 	}
 
 	@Override
-	public void setUpAvatar(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String avatarRoot,
+	public void setUpAvatar(InputStream inputStream, String mimeType,
 			String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException {
 
 		Attachment avatar = user.getAvatar();
-		Attachment attachment = attachmentService.uploadAttchment(
-				attachmentType, inputStream, mimeType, avatarRoot, fileName,
-				fileSize, null, user, null);
+		AttachmentConfig attachmentConfig = attachmentService
+				.getSysAttmConfig();
+		Attachment attachment = attachmentService.uploadAttachment(
+				attachmentConfig, inputStream, mimeType,
+				attachmentConfig.getAvatarRoot(), fileName, fileSize, null,
+				user, null);
 		user.setAvatar(attachment);
 
 		deleteUploadedAvatar(avatar);
@@ -292,13 +294,13 @@ public class UserServiceImpl extends GenericService implements UserService {
 
 	@SuppressWarnings("resource")
 	@Override
-	public void setUpDefaultAvatar(AttachmentType attachmentType,
-			String avatarRoot, User user) throws IOException,
-			URISyntaxException {
+	public void setUpDefaultAvatar(User user)
+			throws IOException, URISyntaxException {
 
 		Attachment avatar = user.getAvatar();
 		AttachmentConfig attachmentConfig = attachmentService
 				.getSysAttmConfig();
+		AttachmentType attachmentType = attachmentConfig.getUploadFileSystem();
 		URL url = Thread.currentThread().getContextClassLoader()
 				.getResource(attachmentConfig.getDefaultAvatarURI());
 		File file = new File(url.toURI());
@@ -312,6 +314,8 @@ public class UserServiceImpl extends GenericService implements UserService {
 		attmInfo.setMimeType(mimeType);
 		String fileName = file.getName();
 		attmInfo.setFileName(fileName);
+		
+		String avatarRoot=attachmentConfig.getAvatarRoot();
 		String filePath = avatarRoot + "/" + fileName;
 		attmInfo.setFilePath(filePath);
 		attmInfo.setUploadConfirmed(true);

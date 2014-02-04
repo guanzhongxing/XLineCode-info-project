@@ -47,7 +47,6 @@ import com.vertonur.ext.ranking.exception.RankingWithPointsExistException;
 import com.vertonur.ext.ranking.service.RankingService;
 import com.vertonur.pojo.Admin;
 import com.vertonur.pojo.Attachment;
-import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.Category;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.Department;
@@ -93,11 +92,8 @@ public class DataGenerator {
 	private int moderatorId;
 	private int adminId = 1;
 	private int groupId;
-	private String uploadRoot;
-	private String bcsUploadRoot = "/upload";
 
 	public DataGenerator() throws LoginException {
-		uploadRoot = System.getProperty("user.home") + "/info-project";
 		service = SystemContextService.getService();
 		generateGuestAuthenticationToken();
 		addInfoUser();
@@ -610,10 +606,9 @@ public class DataGenerator {
 			InputStream inputStream;
 			try {
 				inputStream = new FileInputStream(file);
-				Attachment attachment = attachmentService.uploadAttchment(
-						AttachmentType.LOCAL, inputStream, mimeType,
-						uploadRoot, file.getName(), file.length(), "test",
-						info.getAuthor(), info);
+				Attachment attachment = attachmentService.uploadAttachment(
+						inputStream, mimeType, file.getName(), file.length(),
+						"test", info.getAuthor(), info);
 				setAttachmentId(attachment.getId());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -625,32 +620,17 @@ public class DataGenerator {
 		}
 	}
 
-	public void addEmbeddedImageAttachment2Local() throws URISyntaxException {
-		uploadAttachment(AttachmentType.LOCAL, true, true);
+	public void addEmbeddedImageAttachment() throws URISyntaxException {
+		uploadAttachment( true, true);
 	}
 
-	public void addEmbeddedImageAttachment2Bcs() throws URISyntaxException {
-		uploadAttachment(AttachmentType.BCS, true, true);
+
+	public void addImageAttachment() throws URISyntaxException {
+		uploadAttachment( true, false);
 	}
 
-	public void addImageAttachment2Local() throws URISyntaxException {
-		uploadAttachment(AttachmentType.LOCAL, true, false);
-	}
-
-	public void addImageAttachment2Bcs() throws URISyntaxException {
-		uploadAttachment(AttachmentType.BCS, true, false);
-	}
-
-	public void addAttachment2Bcs() throws URISyntaxException {
-		uploadAttachment(AttachmentType.BCS, false, false);
-	}
-
-	private void uploadAttachment(AttachmentType attachmentType,
-			boolean isImage, boolean isEmbedded) throws URISyntaxException {
-		String uploadRoot = this.uploadRoot;
-		if (AttachmentType.BCS.equals(attachmentType))
-			uploadRoot = bcsUploadRoot;
-
+	private void uploadAttachment(boolean isImage, boolean isEmbedded)
+			throws URISyntaxException {
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
 		Info info = infoService.getInfoById(categoryId, infoId);
@@ -673,12 +653,12 @@ public class DataGenerator {
 			Attachment attachment;
 			if (isEmbedded)
 				attachment = attachmentService.uploadInfoEmbededImage(
-						attachmentType, inputStream, mimeType, uploadRoot,
-						file.getName(), file.length(), info.getAuthor());
+						inputStream, mimeType, file.getName(), file.length(),
+						info.getAuthor());
 			else
-				attachment = attachmentService.uploadAttchment(attachmentType,
-						inputStream, mimeType, uploadRoot, file.getName(),
-						file.length(), "test", info.getAuthor(), info);
+				attachment = attachmentService.uploadAttachment(inputStream,
+						mimeType, file.getName(), file.length(), "test",
+						info.getAuthor(), info);
 			setAttachmentId(attachment.getId());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -945,22 +925,6 @@ public class DataGenerator {
 
 	public void setAdminId(int adminId) {
 		this.adminId = adminId;
-	}
-
-	public String getUploadRoot() {
-		return uploadRoot;
-	}
-
-	public void setUploadRoot(String uploadRoot) {
-		this.uploadRoot = uploadRoot;
-	}
-
-	public String getBcsUploadRoot() {
-		return bcsUploadRoot;
-	}
-
-	public void setBcsUploadRoot(String bcsUploadRoot) {
-		this.bcsUploadRoot = bcsUploadRoot;
 	}
 
 	public int getAvatarId() {

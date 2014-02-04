@@ -23,6 +23,7 @@ import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.AttachmentInfo.FileType;
 import com.vertonur.pojo.Info;
+import com.vertonur.pojo.config.AttachmentConfig;
 import com.vertonur.security.exception.InsufficientPermissionException;
 
 public class AttachmentServiceTest {
@@ -200,26 +201,25 @@ public class AttachmentServiceTest {
 		saver.loginAdmin();
 		saver.addDepartmentAndCategory();
 		saver.addInfo();
+
+		if (AttachmentType.BCS.equals(attachmentType)) {
+			AttachmentConfig config = service.getDataManagementService(
+					ServiceEnum.RUNTIME_PARAMETER_SERVICE)
+					.getAttachmentConfig();
+			config.setUploadFileSystem(AttachmentType.BCS);
+			config.setUploadRoot("/upload");
+		}
 		service.commitTransaction();
 
 		service.beginTransaction();
 		saver.loginInfoUser();
-		if (isEmbeddedImage) {
-			if (AttachmentType.BCS.equals(attachmentType))
-				saver.addEmbeddedImageAttachment2Bcs();
-			else
-				saver.addEmbeddedImageAttachment2Local();
-		} else if (isImage) {
-			if (AttachmentType.BCS.equals(attachmentType))
-				saver.addImageAttachment2Bcs();
-			else
-				saver.addImageAttachment2Local();
-		} else {
-			if (AttachmentType.BCS.equals(attachmentType))
-				saver.addAttachment2Bcs();
-			else
-				saver.addAttachment();
-		}
+		if (isEmbeddedImage)
+			saver.addEmbeddedImageAttachment();
+		else if (isImage)
+			saver.addImageAttachment();
+		else
+			saver.addAttachment();
+
 		service.commitTransaction();
 
 		service.beginTransaction();

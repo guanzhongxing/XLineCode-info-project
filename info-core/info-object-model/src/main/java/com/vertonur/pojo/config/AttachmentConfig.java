@@ -37,6 +37,7 @@ public class AttachmentConfig implements Serializable {
 	private String bcsDefaultAvatarUrl;
 
 	private AttachmentType uploadFileSystem;
+	private String uploadRoot;
 	private String avatarRoot;
 	private String defaultAvatarURI;
 
@@ -207,5 +208,14 @@ public class AttachmentConfig implements Serializable {
 
 	public void setDefaultAvatarURI(String defaultAvatarURI) {
 		this.defaultAvatarURI = defaultAvatarURI;
+	}
+
+	@Column(name = "ATTM_CNG_UPLD_RT")
+	public String getUploadRoot() {
+		return uploadRoot;
+	}
+
+	public void setUploadRoot(String uploadRoot) {
+		this.uploadRoot = uploadRoot;
 	}
 }

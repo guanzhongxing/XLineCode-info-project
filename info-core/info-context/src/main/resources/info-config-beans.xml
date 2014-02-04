@@ -78,6 +78,7 @@
 		<property name="bcsHost" value="${bcs.host}" />
 		
 		<property name="uploadFileSystem" value="${upload.file.system}" />
+		<property name="uploadRoot" value="${upload.root}" />
 		<property name="avatarRoot" value="${avatar.root}" />
 		<property name="defaultAvatarURI" value="${default.avatar.uri}" />
 	</bean>

@@ -135,26 +135,37 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attachmentDAO.getBcsAttms();
 	}
 
-	public Attachment uploadInfoEmbededImage(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, User user)
+	public Attachment uploadInfoEmbededImage(InputStream inputStream,
+			String mimeType, String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException {
 
-		Attachment attachment = handleAttchmentUpload(attachmentType,
-				FileType.EMBEDDED_IMAGE, inputStream, mimeType, uploadRoot,
-				fileName, fileSize, null, user, null);
+		AttachmentConfig attachmentConfig = getSysAttmConfig();
+		Attachment attachment = handleAttachmentUpload(attachmentConfig,
+				FileType.EMBEDDED_IMAGE, inputStream, mimeType,
+				attachmentConfig.getUploadRoot(), fileName, fileSize, null,
+				user, null);
 		attachment.getAttmInfo().setFileType(FileType.EMBEDDED_IMAGE);
 		updateAttachment(attachment);
 
 		return attachment;
 	}
 
-	public Attachment uploadAttchment(AttachmentType attachmentType,
+	public Attachment uploadAttachment(InputStream inputStream,
+			String mimeType, String fileName, long fileSize,
+			String attmComment, User user, AbstractInfo info)
+			throws AttachmentSizeExceedException, IOException {
+		AttachmentConfig attachmentConfig = getSysAttmConfig();
+		return uploadAttachment(attachmentConfig, inputStream, mimeType,
+				attachmentConfig.getUploadRoot(), fileName, fileSize,
+				attmComment, user, info);
+	}
+
+	protected Attachment uploadAttachment(AttachmentConfig attachmentConfig,
 			InputStream inputStream, String mimeType, String uploadRoot,
 			String fileName, long fileSize, String attmComment, User user,
 			AbstractInfo info) throws AttachmentSizeExceedException,
 			IOException {
-		Attachment attachment = handleAttchmentUpload(attachmentType,
+		Attachment attachment = handleAttachmentUpload(attachmentConfig,
 				FileType.FILE, inputStream, mimeType, uploadRoot, fileName,
 				fileSize, attmComment, user, info);
 		attachment.getAttmInfo().setFileType(FileType.FILE);
@@ -164,12 +175,12 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attachment;
 	}
 
-	private Attachment handleAttchmentUpload(AttachmentType attachmentType,
-			FileType fileType, InputStream inputStream, String mimeType,
-			String uploadRoot, String fileName, long fileSize,
-			String attmComment, User user, AbstractInfo info)
-			throws AttachmentSizeExceedException, IOException {
-		AttachmentConfig attachmentConfig = getSysAttmConfig();
+	private Attachment handleAttachmentUpload(
+			AttachmentConfig attachmentConfig, FileType fileType,
+			InputStream inputStream, String mimeType, String uploadRoot,
+			String fileName, long fileSize, String attmComment, User user,
+			AbstractInfo info) throws AttachmentSizeExceedException,
+			IOException {
 		long maxAttmSize = attachmentConfig.getMaxSize();
 		if (fileSize > maxAttmSize)
 			throw new AttachmentSizeExceedException(fileSize, maxAttmSize);
@@ -184,6 +195,7 @@ public class AttachmentServiceImpl extends GenericService implements
 				+ format.format(uploadDate.getTime());
 
 		AttachmentInfo attmInfo = new AttachmentInfo();
+		AttachmentType attachmentType = attachmentConfig.getUploadFileSystem();
 		attmInfo.setAttachmentType(attachmentType);
 		attmInfo.setMimeType(mimeType);
 		attmInfo.setFilesize(fileSize);
@@ -224,8 +236,8 @@ public class AttachmentServiceImpl extends GenericService implements
 		return attm;
 	}
 
-	protected InputStream upload2Local(InputStream inputStream, String filePath,
-			String realFileName) throws IOException {
+	protected InputStream upload2Local(InputStream inputStream,
+			String filePath, String realFileName) throws IOException {
 		File diskFile = new File(filePath);
 		diskFile.mkdirs();
 

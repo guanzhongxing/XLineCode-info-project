@@ -12,7 +12,6 @@ import com.vertonur.pojo.AbstractInfo;
 import com.vertonur.pojo.Attachment;
 import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.User;
-import com.vertonur.pojo.AttachmentInfo.AttachmentType;
 import com.vertonur.pojo.config.AttachmentConfig;
 
 public interface AttachmentService {
@@ -63,9 +62,8 @@ public interface AttachmentService {
 	 * @throws IOException
 	 */
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
-	public Attachment uploadInfoEmbededImage(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, User user)
+	public Attachment uploadInfoEmbededImage(InputStream inputStream,
+			String mimeType, String fileName, long fileSize, User user)
 			throws AttachmentSizeExceedException, IOException;
 
 	/**
@@ -86,9 +84,8 @@ public interface AttachmentService {
 	 * @throws IOException
 	 */
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
-	public Attachment uploadAttchment(AttachmentType attachmentType,
-			InputStream inputStream, String mimeType, String uploadRoot,
-			String fileName, long fileSize, String attmComment, User user,
-			AbstractInfo info) throws AttachmentSizeExceedException,
-			IOException;
+	public Attachment uploadAttachment(InputStream inputStream,
+			String mimeType, String fileName, long fileSize,
+			String attmComment, User user, AbstractInfo info)
+			throws AttachmentSizeExceedException, IOException;
 }
