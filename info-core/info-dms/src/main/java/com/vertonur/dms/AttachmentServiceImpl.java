@@ -82,7 +82,8 @@ public class AttachmentServiceImpl extends GenericService implements
 		} else if (AttachmentType.LOCAL.equals(info.getAttachmentType())) {
 			String filePath = info.getFilePath();
 			File attachment = new File(filePath);
-			attachment.delete();
+			if (attachment.exists())
+				attachment.delete();
 
 			String mainTpye = info.getMimeType().split("/")[0];
 			if (mainTpye.equals("image")
@@ -90,7 +91,8 @@ public class AttachmentServiceImpl extends GenericService implements
 				AttachmentConfig attachmentConfig = getSysAttmConfig();
 				String thumbPath = filePath + attachmentConfig.getThumbSuffix();
 				File thumb = new File(thumbPath);
-				thumb.delete();
+				if (thumb.exists())
+					thumb.delete();
 			}
 		}
 		attachmentDAO.deleteAttachment(attm);
@@ -105,8 +107,10 @@ public class AttachmentServiceImpl extends GenericService implements
 				attachmentConfig.getBcsHost());
 		baiduBCS.setDefaultEncoding("UTF-8"); // Default UTF-8
 
-		baiduBCS.deleteObject(attachmentConfig.getBcsBucket(),
-				attachmentInfo.getFilePath());
+		String bucket = attachmentConfig.getBcsBucket();
+		String filePath = attachmentInfo.getFilePath();
+		if (baiduBCS.doesObjectExist(bucket, filePath))
+			baiduBCS.deleteObject(bucket, filePath);
 	}
 
 	// TODO:make setUploadConfirmed private and add reflection code to set
