@@ -9,43 +9,13 @@
 
 	<bean id="wrapper"
 		class="com.vertonur.context.SystemContextServiceEnvironmentWrapper">
-		<constructor-arg value="com.vertonur.dao.hibernate.manager.HibernateDAOManager" />
+		<constructor-arg
+			value="com.vertonur.dao.hibernate.manager.HibernateDAOManager" />
 		<constructor-arg ref="extendedBeans" />
 		<constructor-arg ref="extendedConfigs" />
 		<constructor-arg ref="externalConfigXmls" />
 		<constructor-arg value="hibernate.cfg.xml" />
 	</bean>
-
-	<bean id="extendedBeans" class="java.util.HashSet">
-		<constructor-arg>
-			<set>
-				<value>com.vertonur.ext.ranking.bean.Ranking</value>
-				<value>com.vertonur.ext.ranking.bean.UserPoint</value>
-				<value>com.vertonur.ext.ranking.bean.PointConfig</value>
-			</set>
-		</constructor-arg>
-	</bean>
-
-	<bean id="extendedConfigs" class="java.util.HashSet">
-		<constructor-arg>
-			<set>
-				<value>com.vertonur.bean.TestConfig</value>
-			</set>
-		</constructor-arg>
-	</bean>
-
-	<bean id="externalConfigXmls" class="java.util.HashSet">
-		<constructor-arg>
-			<set>
-				<value>classpath:info-ext-ranking-beans.xml</value>
-			</set>
-		</constructor-arg>
-	</bean>
-
-	<bean id="systemContextService" class="com.vertonur.context.SystemContextService"
-		factory-method="init" />
-
-	<bean id="infoCoreSpringContext" factory-bean="systemContextService"
-		factory-method="getSpringContext">
-	</bean>
+	
+	<import resource="info-system-context-service-beans.xml" />
 </beans>

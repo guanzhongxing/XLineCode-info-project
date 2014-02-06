@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+
+	<bean id="extendedBeans" class="java.util.HashSet">
+		<constructor-arg>
+			<set>
+				<value>com.vertonur.ext.ranking.bean.Ranking</value>
+				<value>com.vertonur.ext.ranking.bean.UserPoint</value>
+				<value>com.vertonur.ext.ranking.bean.PointConfig</value>
+			</set>
+		</constructor-arg>
+	</bean>
+
+	<bean id="extendedConfigs" class="java.util.HashSet">
+		<constructor-arg>
+			<set>
+				<value>com.vertonur.bean.TestConfig</value>
+			</set>
+		</constructor-arg>
+	</bean>
+
+	<bean id="externalConfigXmls" class="java.util.HashSet">
+		<constructor-arg>
+			<set>
+				<value>classpath:info-ext-ranking-beans.xml</value>
+			</set>
+		</constructor-arg>
+	</bean>
+
+	<bean id="systemContextService" class="com.vertonur.context.SystemContextService"
+		factory-method="init" />
+</beans>

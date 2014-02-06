@@ -19,75 +19,86 @@
 	</bean>
 
 	<bean id="infoConfig" class="com.vertonur.pojo.config.InfoConfig">
-		<property name="infoPgnOffset" value="15" />
-		<property name="newInfoInHours" value="1" />
-		<property name="newInfoInterval" value="3000" />
-		<property name="hottestInfoGeCmts" value="15" />
-		<property name="hottestInfoPgnOffset" value="15" />
-		<property name="recentInfoInDays" value="3" />
-		<property name="recentInfoPgnOffset" value="15" />
-		<property name="usrSpfdInfoPgnOffset" value="15" />
-		<property name="categoryInfoCacheNum" value="15" />
+		<property name="infoPgnOffset" value="${info.pagination.offset}" />
+		<property name="newInfoInHours" value="${new.info.in.hours}" />
+		<property name="newInfoInterval" value="${new.info.interval}" />
+		<property name="hottestInfoGeCmts" value="${hottest.info.ge.cmts}" />
+		<property name="hottestInfoPgnOffset" value="${hottest.info.pagination.offset}" />
+		<property name="recentInfoInDays" value="${recent.info.in.days}" />
+		<property name="recentInfoPgnOffset" value="${recent.info.pagination.offest}" />
+		<property name="usrSpfdInfoPgnOffset" value="${usr.spfd.info.pagination.offset}" />
+		<property name="categoryInfoCacheNum" value="${category.info.cache.num}" />
 	</bean>
 
 	<bean id="commentConfig" class="com.vertonur.pojo.config.CommentConfig">
-		<property name="cmtPgnOffset" value="15" />
-		<property name="newCmtInterval" value="3000" />
-		<property name="usrSpfdCmtPgnOffset" value="15" />
+		<property name="cmtPgnOffset" value="${cmt.pagination.offset}" />
+		<property name="newCmtInterval" value="${new.cmt.interval}" />
+		<property name="usrSpfdCmtPgnOffset" value="${usr.spfd.cmt.pagination.offset}" />
 	</bean>
 
 	<bean id="privateMessageConfig" class="com.vertonur.pojo.config.PrivateMsgConfig">
-		<property name="privateMsgPgnOffset" value="15" />
-		<property name="newPrivateMsgNum" value="3" />
-		<property name="newPrivateMsgInDays" value="1" />
+		<property name="privateMsgPgnOffset" value="${private.msg.pagination.offset}" />
+		<property name="newPrivateMsgNum" value="${new.private.msg.num}" />
+		<property name="newPrivateMsgInDays" value="${new.private.msg.in.days}" />
 	</bean>
 
 	<bean id="systemContextConfig" class="com.vertonur.pojo.config.SystemContextConfig">
-		<property name="checkAcctActivationSessionDelay" value="300" />
-		<property name="checkUserSessionDelay" value="300" />
-		<property name="threadPoolSize" value="10" />
-		<property name="sessionTiming" value="600" />
-		<property name="loginSessionTiming" value="1800" />
-		<property name="acctActivationSessionTiming" value="86400" />
+		<property name="checkAcctActivationSessionDelay" value="${check.acct.activation.session.delay}" />
+		<property name="checkUserSessionDelay" value="${check.user.session.delay}" />
+		<property name="threadPoolSize" value="${thread.pool.size}" />
+		<property name="sessionTiming" value="${session.timing}" />
+		<property name="loginSessionTiming" value="${login.session.timing}" />
+		<property name="acctActivationSessionTiming" value="${acct.activation.session.timing}" />
 	</bean>
 
 	<bean id="userConfig" class="com.vertonur.pojo.config.UserConfig">
-		<property name="usrPgnOffset" value="15" />
-		<property name="requireNewUserAuthEmail" value="false" />
-		<property name="notifyAuthorOnNewCmt" value="true" />
-		<property name="avatarWidth" value="150" />
-		<property name="avatarHeight" value="150" />
-		<property name="avatarSize" value="1024" />
-		<property name="registrationEnabled" value="true" />
+		<property name="usrPgnOffset" value="${usr.pagination.offset}" />
+		<property name="requireNewUserAuthEmail" value="${require.new.user.auth.email}" />
+		<property name="notifyAuthorOnNewCmt" value="${notify.author.on.new.cmt}" />
+		<property name="avatarWidth" value="${avatar.width}" />
+		<property name="avatarHeight" value="${avatar.height}" />
+		<property name="avatarSize" value="${avatar.size}" />
+		<property name="registrationEnabled" value="${registration.enabled}" />
 	</bean>
 
 	<bean id="attachmentConfig" class="com.vertonur.pojo.config.AttachmentConfig">
-		<property name="maxAttmtNum" value="1" />
-		<property name="maxSize" value="10485760" />
-		<property name="attmtEnabled" value="true" />
-		<property name="downloadEnabled" value="true" />
-		<property name="thumbWidth" value="400" />
-		<property name="thumbHeight" value="400" />
-		<property name="thumbEnabled" value="true" />
-		<property name="configTyp" value="SYS" />
+		<property name="maxAttmtNum" value="${max.attmt.num}" />
+		<property name="maxSize" value="${max.size}" />
+		<property name="attmtEnabled" value="${attmt.enabled}" />
+		<property name="downloadEnabled" value="${download.enabled}" />
+		<property name="thumbSuffix" value="${thumb.suffix}" />
+		<property name="thumbWidth" value="${thumb.width}" />
+		<property name="thumbHeight" value="${thumb.height}" />
+		<property name="thumbEnabled" value="${thumb.enabled}" />
+		<property name="configTyp" value="${config.type}" />
+		
+		<property name="bcsAccessKey" value="${bcs.access.key}" />
+		<property name="bcsSecretKey" value="${bcs.secret.key}" />
+		<property name="bcsBucket" value="${bcs.bucket}" />
+		<property name="bcsHost" value="${bcs.host}" />
+		
+		<property name="uploadFileSystem" value="${upload.file.system}" />
+		<property name="uploadRoot" value="${upload.root}" />
+		<property name="avatarRoot" value="${avatar.root}" />
+		<property name="defaultAvatarURI" value="${default.avatar.uri}" />
 	</bean>
 
 	<bean id="emailConfig" class="com.vertonur.pojo.config.EmailConfig">
-		<property name="sender" value="sunimisoul@163.com" />
-		<property name="smtpHost" value="smtp.163.com" />
-		<property name="smtpPort" value="25" />
-		<property name="smtpSSLPort" value="465" />
-		<property name="requireAuth" value="true" />
-		<property name="requireSSL" value="false" />
-		<property name="smtpUsername" value="sunimisoul" />
-		<property name="smtpPwd" value="abc" />
-		<property name="emailFormat" value="html" />
+		<property name="sender" value="${sender}" />
+		<property name="smtpHost" value="${smtp.host}" />
+		<property name="smtpPort" value="${smtp.port}" />
+		<property name="smtpSSLPort" value="${smtp.ssl.port}" />
+		<property name="requireAuth" value="${require.auth}" />
+		<property name="requireSSL" value="${require.ssl}" />
+		<property name="smtpUsername" value="${smtp.username}" />
+		<property name="smtpPwd" value="${smtp.pwd}" />
+		<property name="emailFormat" value="${email.format}" />
 	</bean>
 
 	<bean id="moderationConfig" class="com.vertonur.pojo.config.ModerationConfig">
-		<property name="mdrLgPgnOffset" value="15" />
-		<property name="digestionNum" value="30" />
-		<property name="assignPendingLogInterval" value="1200" />
-		<property name="threadPoolSize" value="3" />
+		<property name="mdrLgPgnOffset" value="${mdr.log.pagination.offset}" />
+		<property name="digestionNum" value="${digestion.num}" />
+		<property name="assignPendingLogInterval" value="${assign.pending.log.interval}" />
+		<property name="threadPoolSize" value="${thread.pool.size}" />
 	</bean>
 </beans>

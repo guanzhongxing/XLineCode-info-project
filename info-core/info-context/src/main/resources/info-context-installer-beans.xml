@@ -64,15 +64,6 @@
 		<property name="defaultModeratorGroupTemplate" ref="defaultModeratorGroupTemplate" />
 	</bean>
 
-	<bean id="attachmentInfo" class="com.vertonur.pojo.AttachmentInfo">
-		<property name="realFilename" value="defaultAvatar.jpeg" />
-		<property name="physicalFilename" value="/upload/avatar/defaultAvatar.jpeg" />
-		<property name="downloadUrl" value="/upload/avatar/defaultAvatar.jpeg" />
-		<property name="mimeType" value="image/jpeg" />
-		<property name="uploadConfirmed" value="true" />
-		<property name="attachmentType" value="LOCAL" />
-	</bean>
-
 	<bean id="superAdmin" class="com.vertonur.pojo.Admin">
 		<property name="name" value="${info_installer_bean_admin_name}" />
 		<property name="password" value="12345" />
@@ -107,7 +98,6 @@
 	</bean>
 
 	<bean id="systemDataInitializer" class="com.vertonur.context.SystemDataInitializer">
-		<property name="attachmentInfo" ref="attachmentInfo" />
 		<property name="guest" ref="guest" />
 		<property name="superAdmin" ref="superAdmin" />
 		<property name="moderator" ref="moderator" />

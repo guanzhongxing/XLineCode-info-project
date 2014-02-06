@@ -2,6 +2,18 @@ package com.vertonur.bean;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.FileNameMap;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +37,7 @@ import com.vertonur.dms.PermissionService;
 import com.vertonur.dms.UserService;
 import com.vertonur.dms.constant.ServiceEnum;
 import com.vertonur.dms.exception.Assigned2SubGroupException;
+import com.vertonur.dms.exception.AttachmentSizeExceedException;
 import com.vertonur.dms.exception.CategoryModerationListNotEmptyException;
 import com.vertonur.dms.exception.DeptModerationListNotEmptyException;
 import com.vertonur.dms.exception.SavingCommentToLockedInfoException;
@@ -34,7 +47,6 @@ import com.vertonur.ext.ranking.exception.RankingWithPointsExistException;
 import com.vertonur.ext.ranking.service.RankingService;
 import com.vertonur.pojo.Admin;
 import com.vertonur.pojo.Attachment;
-import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.Category;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.Department;
@@ -53,6 +65,10 @@ import com.vertonur.test.CommonDataGenerator;
 public class DataGenerator {
 	private static int USERS_NUM = 9;
 	private static int GROUPS_NUM = 9;
+	public static String ATTACHMENT_UPLOAD_IMAGE = "attachment-demo.jpg";
+	public static String UPLOAD_AVATAR = "avatar-demo.jpg";
+	public static int TXT_FILE_SIZE = 105;
+	public static int ATTACHMENT_DEMO_IMAGE_SIZE = 22377;
 
 	private SystemContextService service;
 	private int[] userIds = new int[USERS_NUM];
@@ -61,6 +77,7 @@ public class DataGenerator {
 	private int categoryId;
 	private int infoId;
 	private int attachmentId;
+	private int avatarId;
 	private int rankingId_1;
 	private int rankingId_2;
 	private int rankingId_3;
@@ -583,15 +600,72 @@ public class DataGenerator {
 		AttachmentService attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		for (int i = 0; i < num; i++) {
-			Attachment attachment = CommonDataGenerator.generateAttachment(
-					info, info.getAuthor());
-			AttachmentInfo attachmentInfo = CommonDataGenerator
-					.generateAttachmentInfo(attachment);
-			attachment.setAttmInfo(attachmentInfo);
+			File file = generateSampleTxtFile();
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			String mimeType = fileNameMap.getContentTypeFor(file.getName());
+			InputStream inputStream;
+			try {
+				inputStream = new FileInputStream(file);
+				Attachment attachment = attachmentService.uploadAttachment(
+						inputStream, mimeType, file.getName(), file.length(),
+						"test", info.getAuthor(), info);
+				setAttachmentId(attachment.getId());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (AttachmentSizeExceedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-			attachmentService.saveAttachment(attachment);
-			attachmentService.confirmAttachmentUpload(attachment);
+	public void addEmbeddedImageAttachment() throws URISyntaxException {
+		uploadAttachment( true, true);
+	}
+
+
+	public void addImageAttachment() throws URISyntaxException {
+		uploadAttachment( true, false);
+	}
+
+	private void uploadAttachment(boolean isImage, boolean isEmbedded)
+			throws URISyntaxException {
+		InfoService infoService = service
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		Info info = infoService.getInfoById(categoryId, infoId);
+		AttachmentService attachmentService = service
+				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
+		File file;
+		if (isImage) {
+			URL url = Thread.currentThread().getContextClassLoader()
+					.getResource(ATTACHMENT_UPLOAD_IMAGE);
+			file = new File(url.toURI());
+		} else {
+			file = generateSampleTxtFile();
+		}
+
+		FileNameMap fileNameMap = URLConnection.getFileNameMap();
+		String mimeType = fileNameMap.getContentTypeFor(file.getName());
+		InputStream inputStream;
+		try {
+			inputStream = new FileInputStream(file);
+			Attachment attachment;
+			if (isEmbedded)
+				attachment = attachmentService.uploadInfoEmbededImage(
+						inputStream, mimeType, file.getName(), file.length(),
+						info.getAuthor());
+			else
+				attachment = attachmentService.uploadAttachment(inputStream,
+						mimeType, file.getName(), file.length(), "test",
+						info.getAuthor(), info);
 			setAttachmentId(attachment.getId());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (AttachmentSizeExceedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -676,6 +750,25 @@ public class DataGenerator {
 		Moderator moderator = userService.getModeratorById(moderatorId);
 		Integer digestingNum = moderator.getCategoryDigestingNum(categoryId);
 		assertEquals(expectedNum, digestingNum.intValue());
+	}
+
+	public File generateSampleTxtFile() {
+		try {
+			File file = File.createTempFile("info-project-", ".txt");
+			file.deleteOnExit();
+
+			Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.write("01234567890123456789\n");
+			writer.close();
+
+			return file;
+		} catch (IOException e) {
+			return null;
+		}
 	}
 
 	public void logoutUser() {
@@ -832,5 +925,13 @@ public class DataGenerator {
 
 	public void setAdminId(int adminId) {
 		this.adminId = adminId;
+	}
+
+	public int getAvatarId() {
+		return avatarId;
+	}
+
+	public void setAvatarId(int avatarId) {
+		this.avatarId = avatarId;
 	}
 }

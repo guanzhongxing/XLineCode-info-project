@@ -9,8 +9,6 @@ public interface AttachmentDAO extends GenericDAO<Attachment, Integer> {
 
 	Integer saveAttachment(Attachment attm);
 
-	void confirmAttachmentUpload(Attachment attm);
-
 	Attachment getAttmById(int attmId);
 
 	void updateAttachment(Attachment attm);

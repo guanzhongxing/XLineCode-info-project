@@ -32,6 +32,7 @@ import com.vertonur.dms.ExtendedBeanService;
 import com.vertonur.dms.GroupService;
 import com.vertonur.dms.ModeratorManager;
 import com.vertonur.dms.RuntimeParameterService;
+import com.vertonur.dms.UserService;
 import com.vertonur.dms.constant.ServiceEnum;
 import com.vertonur.pojo.Comment;
 import com.vertonur.pojo.ExtendedBean;
@@ -111,7 +112,8 @@ public class SystemContextService {
 	private void initSystemData() throws Exception {
 		SystemDataInitializer initializer = (SystemDataInitializer) context
 				.getBean("systemDataInitializer");
-		initializer.init(getDaoManager(), passwordEncoder);
+		UserService userService = (UserService) context.getBean("userService");
+		initializer.init(getDaoManager(), passwordEncoder, userService);
 	}
 
 	private void setUpGuestData() {

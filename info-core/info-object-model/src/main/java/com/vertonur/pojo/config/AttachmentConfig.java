@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.vertonur.pojo.AttachmentInfo.AttachmentType;
+
 @Entity(name = "INFO_COR_ATTM_CNG")
 public class AttachmentConfig implements Serializable {
 
@@ -18,17 +20,29 @@ public class AttachmentConfig implements Serializable {
 	public static enum AttmCngType {
 		SYS, USR
 	}
+
 	private int id;
 	private int maxAttmtNum;
-	private int maxSize;
+	private long maxSize;
 	private boolean attmtEnabled;
 	private boolean downloadEnabled;
+	private String thumbSuffix;
 	private int thumbWidth;
 	private int thumbHeight;
 	private boolean thumbEnabled;
-	
+	private String bcsAccessKey;
+	private String bcsSecretKey;
+	private String bcsBucket;
+	private String bcsHost;
+	private String bcsDefaultAvatarUrl;
+
+	private AttachmentType uploadFileSystem;
+	private String uploadRoot;
+	private String avatarRoot;
+	private String defaultAvatarURI;
+
 	private AttmCngType configTyp;
-	
+
 	public AttachmentConfig() {
 	}
 
@@ -38,6 +52,7 @@ public class AttachmentConfig implements Serializable {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -52,11 +67,11 @@ public class AttachmentConfig implements Serializable {
 	}
 
 	@Column(name = "ATTM_CNG_MAX_SIZE")
-	public int getMaxSize() {
+	public long getMaxSize() {
 		return maxSize;
 	}
 
-	public void setMaxSize(int maxSize) {
+	public void setMaxSize(long maxSize) {
 		this.maxSize = maxSize;
 	}
 
@@ -64,6 +79,7 @@ public class AttachmentConfig implements Serializable {
 	public boolean isAttmtEnabled() {
 		return attmtEnabled;
 	}
+
 	public void setAttmtEnabled(boolean attmtEnabled) {
 		this.attmtEnabled = attmtEnabled;
 	}
@@ -76,7 +92,7 @@ public class AttachmentConfig implements Serializable {
 	public void setDownloadEnabled(boolean downloadEnabled) {
 		this.downloadEnabled = downloadEnabled;
 	}
-	
+
 	@Column(name = "ATTM_TMB_WID")
 	public int getThumbWidth() {
 		return thumbWidth;
@@ -111,5 +127,95 @@ public class AttachmentConfig implements Serializable {
 
 	public void setConfigTyp(AttmCngType configTyp) {
 		this.configTyp = configTyp;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_ACS_KY")
+	public String getBcsAccessKey() {
+		return bcsAccessKey;
+	}
+
+	public void setBcsAccessKey(String bcsAccessKey) {
+		this.bcsAccessKey = bcsAccessKey;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_SCRT_KY")
+	public String getBcsSecretKey() {
+		return bcsSecretKey;
+	}
+
+	public void setBcsSecretKey(String bcsSecretKey) {
+		this.bcsSecretKey = bcsSecretKey;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_BCKT")
+	public String getBcsBucket() {
+		return bcsBucket;
+	}
+
+	public void setBcsBucket(String bcsBucket) {
+		this.bcsBucket = bcsBucket;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_HST")
+	public String getBcsHost() {
+		return bcsHost;
+	}
+
+	public void setBcsHost(String bcsHost) {
+		this.bcsHost = bcsHost;
+	}
+
+	@Column(name = "ATTM_CNG_BCS_DFT_AVTR_URL", length = 600)
+	public String getBcsDefaultAvatarUrl() {
+		return bcsDefaultAvatarUrl;
+	}
+
+	public void setBcsDefaultAvatarUrl(String bcsDefaultAvatarUrl) {
+		this.bcsDefaultAvatarUrl = bcsDefaultAvatarUrl;
+	}
+
+	@Column(name = "ATTM_CNG_THMB_SFFX")
+	public String getThumbSuffix() {
+		return thumbSuffix;
+	}
+
+	public void setThumbSuffix(String thumbSuffix) {
+		this.thumbSuffix = thumbSuffix;
+	}
+
+	@Column(name = "ATTM_CNG_UPLD_FL_SYS")
+	public AttachmentType getUploadFileSystem() {
+		return uploadFileSystem;
+	}
+
+	public void setUploadFileSystem(AttachmentType uploadFileSystem) {
+		this.uploadFileSystem = uploadFileSystem;
+	}
+
+	@Column(name = "ATTM_CNG_AVTR_RT")
+	public String getAvatarRoot() {
+		return avatarRoot;
+	}
+
+	public void setAvatarRoot(String avatarRoot) {
+		this.avatarRoot = avatarRoot;
+	}
+
+	@Column(name = "ATTM_CNG_DFT_AVTR_URI")
+	public String getDefaultAvatarURI() {
+		return defaultAvatarURI;
+	}
+
+	public void setDefaultAvatarURI(String defaultAvatarURI) {
+		this.defaultAvatarURI = defaultAvatarURI;
+	}
+
+	@Column(name = "ATTM_CNG_UPLD_RT")
+	public String getUploadRoot() {
+		return uploadRoot;
+	}
+
+	public void setUploadRoot(String uploadRoot) {
+		this.uploadRoot = uploadRoot;
 	}
 }

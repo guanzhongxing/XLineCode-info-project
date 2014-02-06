@@ -1,19 +1,18 @@
 package com.vertonur.context;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
+import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.vertonur.dao.api.AdminDAO;
 import com.vertonur.dao.api.SystemStatisticianDAO;
 import com.vertonur.dao.api.UserDAO;
 import com.vertonur.dao.manager.DAOManager;
+import com.vertonur.dms.UserService;
 import com.vertonur.pojo.Admin;
-import com.vertonur.pojo.Attachment;
-import com.vertonur.pojo.AttachmentInfo;
 import com.vertonur.pojo.Moderator;
 import com.vertonur.pojo.User;
 import com.vertonur.pojo.security.Group;
@@ -25,17 +24,19 @@ public class SystemDataInitializer {
 	private User guest;
 	private Admin superAdmin;
 	private Moderator moderator;
-	private AttachmentInfo attachmentInfo;
 	private AuthorityInitializer authorityInitializer;
 	private RuntimeParameterInitializer runtimeParameterInitializer;
 	private BackendPermissionInitializer backendPermissionInitializer;
 
-	public void init(DAOManager daoManager, PasswordEncoder passwordEncoder)
-			throws IllegalAccessException, InvocationTargetException {
+	public void init(DAOManager daoManager, PasswordEncoder passwordEncoder,
+			UserService userService) throws IllegalAccessException,
+			InvocationTargetException, IOException, URISyntaxException {
 		AdminDAO adminDao = daoManager.getAdminDAO();
 		UserDAO userDao = daoManager.getUserDAO();
 		long num = adminDao.getAdminNum();
 		if (num == 0) {
+			runtimeParameterInitializer.init(daoManager);
+
 			Set<Role> defaultUserRoles = authorityInitializer
 					.initDefaultUserRoles(daoManager);
 			Group defaultUserGroup = authorityInitializer.initDefaultUserGroup(
@@ -57,13 +58,7 @@ public class SystemDataInitializer {
 			password = passwordEncoder.encodePassword(password, id);
 			superAdmin.setPassword(password);
 
-			attachmentInfo.setUploadTime(new Date());
-			AttachmentInfo newInfo = new AttachmentInfo();
-			BeanUtils.copyProperties(newInfo, attachmentInfo);
-			Attachment avatar = new Attachment();
-			avatar.setAttmInfo(newInfo);
-			avatar.setUploader(superAdmin);
-			superAdmin.setAvatar(avatar);
+			userService.setUpDefaultAvatar(superAdmin);
 			userDao.updateUser(superAdmin);
 
 			Group defaultGuestGroup = authorityInitializer
@@ -74,12 +69,7 @@ public class SystemDataInitializer {
 			password = passwordEncoder.encodePassword(password, id);
 			guest.setPassword(password);
 
-			newInfo = new AttachmentInfo();
-			BeanUtils.copyProperties(newInfo, attachmentInfo);
-			avatar = new Attachment();
-			avatar.setAttmInfo(newInfo);
-			avatar.setUploader(guest);
-			guest.setAvatar(avatar);
+			userService.setUpDefaultAvatar(guest);
 			userDao.updateUser(guest);
 
 			SystemStatisticianDAO systemStatisticianDAO = daoManager
@@ -92,7 +82,6 @@ public class SystemDataInitializer {
 			systemStatistician.setDefaultUserGroupId(defaultUserGroup.getId());
 			systemStatisticianDAO.updateSystemStatistician(systemStatistician);
 
-			runtimeParameterInitializer.init(daoManager);
 			backendPermissionInitializer.init(daoManager);
 		}
 	}
@@ -138,13 +127,5 @@ public class SystemDataInitializer {
 	public void setBackendPermissionInitializer(
 			BackendPermissionInitializer backendPermissionInitializer) {
 		this.backendPermissionInitializer = backendPermissionInitializer;
-	}
-
-	public AttachmentInfo getAttachmentInfo() {
-		return attachmentInfo;
-	}
-
-	public void setAttachmentInfo(AttachmentInfo attachmentInfo) {
-		this.attachmentInfo = attachmentInfo;
 	}
 }

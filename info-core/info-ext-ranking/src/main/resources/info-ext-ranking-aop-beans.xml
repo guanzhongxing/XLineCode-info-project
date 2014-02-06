@@ -46,7 +46,7 @@
 	<bean id="increaseUploadAttmPointsAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
 		scope="prototype">
 		<property name="advice" ref="increaseUploadAttmPointsAdvice" />
-		<property name="pointcut" ref="saveAttmPointcut" />
+		<property name="pointcut" ref="uploadAttachmentPointcut" />
 	</bean>
 
 	<bean id="operateRankingPermission" class="com.vertonur.pojo.security.Permission"

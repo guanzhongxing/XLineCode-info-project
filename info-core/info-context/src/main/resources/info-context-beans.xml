@@ -12,6 +12,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:i18n/ClassResources_zh.properties</value>
+				<value>classpath:runtime.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -91,7 +92,7 @@
 		<property name="target" ref="attachmentServiceTarget" />
 		<property name="interceptorNames">
 			<list>
-				<value>validateUploadAttmPermissionAdvisor</value>
+				<value>validateUploadAttchmentAdvisor</value>
 				<value>validateDownloadAttmPermissionAdvisor</value>
 				<value>increaseUploadAttmPointsAdvisor</value>
 			</list>
@@ -124,7 +125,7 @@
 		</property>
 		<property name="proxyInterfaces" value="com.vertonur.dms.UserService" />
 	</bean>
-	
+
 	<bean id="infoService" class="org.springframework.aop.framework.ProxyFactoryBean"
 		scope="prototype">
 		<property name="target" ref="infoServiceTarget" />

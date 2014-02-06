@@ -74,10 +74,6 @@ public class RuntimeParameterInitializer {
 		this.userConfig = userConfig;
 	}
 
-	public void setAttachmentConfig(AttachmentConfig attachmentConfig) {
-		this.attachmentConfig = attachmentConfig;
-	}
-
 	public void setSystemContextConfig(SystemContextConfig systemContextConfig) {
 		this.systemContextConfig = systemContextConfig;
 	}
@@ -88,5 +84,9 @@ public class RuntimeParameterInitializer {
 
 	public void setModerationConfig(ModerationConfig moderationConfig) {
 		this.moderationConfig = moderationConfig;
+	}
+
+	public void setAttachmentConfig(AttachmentConfig attachmentConfig) {
+		this.attachmentConfig = attachmentConfig;
 	}
 }
