@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vertonur</groupId>
 	<artifactId>info-parent</artifactId>
-	<version>0.9.3</version>
+	<version>0.9.4</version>
 	<packaging>pom</packaging>
 	<description>A project that not just used to share common project info. across multi sub projects , also used to share eclipse common setting, e.g. external tool setting</description>
 
 	<properties>
-		<projects.version>0.9.3</projects.version>
+		<projects.version>0.9.4</projects.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 

@@ -3,7 +3,7 @@
   <parent>
     <artifactId>info-parent</artifactId>
     <groupId>com.vertonur</groupId>
-    <version>0.9.3</version>
+    <version>0.9.4</version>
   </parent>
   <artifactId>info-dao-api</artifactId>
   <dependencies>
