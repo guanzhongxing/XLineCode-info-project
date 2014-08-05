@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vertonur.dao.api.CategoryDAO;
-import com.vertonur.dms.cache.CategoryCache;
 import com.vertonur.dms.exception.CategoryModerationListNotEmptyException;
 import com.vertonur.dms.exception.FailToSetPropertyException;
 import com.vertonur.pojo.Category;
@@ -23,15 +22,13 @@ public class CategoryServiceImpl extends GenericService implements
 			.getLogger(CategoryServiceImpl.class.getCanonicalName());
 	private CategoryDAO categoryDao;
 	private DepartmentService deptService;
-	private CategoryCache cache;
 
 	protected CategoryServiceImpl() {
 		categoryDao = manager.getCategoryDAO();
-		CacheService service = CacheService.getCacheService();
 		deptService = new DepartmentServiceImpl();
-		cache = service.getCategoryCache();
 	}
 
+	@Override
 	public void updateCategory(Category category)
 			throws CategoryModerationListNotEmptyException {
 		Department department = category.getDepartment();
@@ -48,29 +45,19 @@ public class CategoryServiceImpl extends GenericService implements
 			}
 
 		categoryDao.updateCategory(category);
-		int deptId = department.getId();
-		if (category.isDeprecated())
-			cache.removeCategory(deptId, category.getId());
-		else
-			cache.updateCategory(deptId, categoryDao);
 	}
 
+	@Override
 	public int saveCategory(int deptId, Category category) {
 		int id = categoryDao.saveCategory(category);
 		addDepartment(deptId, category);
 		return id;
 	}
 
-	public Category getCategoryById(int deptId, int categoryId) {
-		return getCategoryById(deptId, categoryId, true);
-	}
-
-	public Category getCategoryById(int deptId, int categoryId, boolean useCache) {
+	@Override
+	public Category getCategoryById(int categoryId) {
 		Category category = null;
-		if (useCache)
-			category = cache.getCategory(deptId, categoryId);
-		else
-			category = categoryDao.getCategoryById(categoryId);
+		category = categoryDao.getCategoryById(categoryId);
 		return category;
 	}
 
@@ -82,13 +69,13 @@ public class CategoryServiceImpl extends GenericService implements
 	 * @param category
 	 * @return
 	 */
+	@Override
 	public boolean deleteCategory(Category category) {
-		int deptId = category.getDepartment().getId();
-		cache.removeCategory(deptId, category.getId());
 		return categoryDao.deleteCategory(category);
 	}
 
-	public void deleteCategories(int deptId) throws CategoryModerationListNotEmptyException {
+	public void deleteCategories(int deptId)
+			throws CategoryModerationListNotEmptyException {
 		List<Category> categories = categoryDao.getDeptCategorys(deptId);
 		for (Category category : categories) {
 			category.setDeprecated(true);
@@ -96,12 +83,14 @@ public class CategoryServiceImpl extends GenericService implements
 		}
 	}
 
+	@Override
 	public List<Category> getCategories() {
-		return cache.getCategories();
+		return categoryDao.getCategorys();
 	}
 
+	@Override
 	public List<Category> getDeptCategories(int deptId) {
-		return cache.getDeptCategories(deptId);
+		return categoryDao.getDeptCategorys(deptId);
 	}
 
 	/**
@@ -110,6 +99,7 @@ public class CategoryServiceImpl extends GenericService implements
 	 * @param newInfoEntries
 	 * @param inXxDays
 	 */
+	@Override
 	public void hasNewInfosToUser(Category category, User user) {
 		InfoService infoService = new InfoServiceImpl();
 		UserService userService = new UserServiceImpl();
@@ -123,31 +113,26 @@ public class CategoryServiceImpl extends GenericService implements
 			category.hasNewInfoToUser(false);
 	}
 
-	public void updateStatistician(int deptId, int categoryId,
+	@Override
+	public void updateStatistician(int categoryId,
 			CategoryStatistician statistician) {
-		Category cachedCategory = cache.getCategory(deptId, categoryId);
-		cachedCategory.setStatistician(statistician);
 		Category category = categoryDao.getCategoryById(categoryId);
 		category.setStatistician(statistician);
 		categoryDao.updateCategory(category);
 	}
 
-	public int getCategoriesCmtNum() {
-		int cmtNum = 0;
-		List<Category> categories = cache.getCategories();
-		for (Category category : categories)
-			cmtNum += category.getStatistician().getCommentNum();
+	@Override
+	public long getCategoriesCmtNum() {
 
-		return cmtNum;
+		return categoryDao.getCategoriesCmtNum();
 	}
 
 	/**
 	 * Add the category to the department and update the dapartment in the cache
 	 */
 	private void addDepartment(int deptId, Category category) {
-		Department dept = deptService.getDepartmentById(deptId, false);
+		Department dept = deptService.getDepartmentById(deptId);
 		setDepartment(dept, category);
-		cache.reloadCategories(deptId, categoryDao);
 	}
 
 	void setDepartment(Department dept, Category category) {
@@ -179,10 +164,8 @@ public class CategoryServiceImpl extends GenericService implements
 	public void changeDepartment(int deptId, Category category) {
 		int staleDeptId = category.getDepartment().getId();
 		if (deptId != staleDeptId) {
-			Department dept = deptService.getDepartmentById(deptId, false);
+			Department dept = deptService.getDepartmentById(deptId);
 			setDepartment(dept, category);
-			cache.removeCategory(staleDeptId, category.getId());
-			cache.addCategory(deptId, category);
 		}
 	}
 }

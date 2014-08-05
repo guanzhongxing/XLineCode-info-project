@@ -154,8 +154,7 @@ public class ModerationServiceImpl extends GenericService implements
 			int categoryId = category.getId();
 			int departmentId = category.getDepartment().getId();
 			CategoryStatistician statistician = category.getStatistician();
-			decreaseCategoryStatisticianNum(info, statistician, categoryId,
-					departmentId);
+			decreaseCategoryStatisticianNum(info, statistician, categoryId);
 			decreaseUserMsgStatisticianNum(info);
 
 			State state = content.getState();
@@ -171,8 +170,7 @@ public class ModerationServiceImpl extends GenericService implements
 			CategoryStatistician categoryStatistician = category
 					.getStatistician();
 			categoryStatistician.decreaseCommentNum();
-			categoryService.updateStatistician(
-					category.getDepartment().getId(), category.getId(),
+			categoryService.updateStatistician(category.getId(),
 					categoryStatistician);
 
 			InfoStatistician statistician = info.getStatistician();
@@ -271,15 +269,13 @@ public class ModerationServiceImpl extends GenericService implements
 			int departmentId = department.getId();
 
 			if (fromModification) {
-				decreaseCategoryStatisticianNum(info, statistician, categoryId,
-						departmentId);
+				decreaseCategoryStatisticianNum(info, statistician, categoryId);
 				updateLatestInfo(info, statistician, categoryId, departmentId);
 				decreaseUserMsgStatisticianNum(info);
 			}
 
 			statistician.increaseToModerateNum();
-			categoryService.updateStatistician(departmentId, categoryId,
-					statistician);
+			categoryService.updateStatistician(categoryId, statistician);
 			return addLog(info, ModerationStatus.DEFERRED, categoryId);
 		} else {
 			if (fromModification)
@@ -292,15 +288,14 @@ public class ModerationServiceImpl extends GenericService implements
 	}
 
 	private void decreaseCategoryStatisticianNum(Info info,
-			CategoryStatistician statistician, int categoryId, int departmentId) {
+			CategoryStatistician statistician, int categoryId) {
 		statistician.decreaseInfoNum();
 		InfoStatistician infoStatistician = info.getStatistician();
 		int cmtNum = infoStatistician.getCommentNum();
 		int categoryCmtNum = statistician.getCommentNum();
 		statistician.setCommentNum(categoryCmtNum - cmtNum);
 
-		categoryService.updateStatistician(departmentId, categoryId,
-				statistician);
+		categoryService.updateStatistician(categoryId, statistician);
 	}
 
 	private void updateLatestInfo(Info info, CategoryStatistician statistician,
@@ -320,8 +315,7 @@ public class ModerationServiceImpl extends GenericService implements
 			}
 
 			statistician.setLatestInfo(latestInfo);
-			categoryService.updateStatistician(departmentId, categoryId,
-					statistician);
+			categoryService.updateStatistician(categoryId, statistician);
 		}
 	}
 
@@ -371,7 +365,6 @@ public class ModerationServiceImpl extends GenericService implements
 			updateInfoData(info);
 
 			Department department = category.getDepartment();
-			int departmentId = department.getId();
 			// set category's statistician
 			setLatestInfo(statistician, info);
 			increaseUserMsgStatistician(info);
@@ -379,8 +372,7 @@ public class ModerationServiceImpl extends GenericService implements
 			if (department.isModerated() || category.isModerated()) {
 				statistician.decreaseToModerateNum();
 			}
-			categoryService.updateStatistician(departmentId, category.getId(),
-					statistician);
+			categoryService.updateStatistician(category.getId(), statistician);
 		} else if (ModerationStatus.REJECTED.equals(status)) {
 			rejectInfo(statistician, info);
 		}
@@ -396,7 +388,6 @@ public class ModerationServiceImpl extends GenericService implements
 		CategoryStatistician statistician = category.getStatistician();
 		if (ModerationStatus.APPROVED.equals(status)) {
 			Department department = category.getDepartment();
-			int departmentId = department.getId();
 
 			State state = info.getState();
 			state.setPending(false);
@@ -415,8 +406,8 @@ public class ModerationServiceImpl extends GenericService implements
 				statistician.setCommentNum(categoryCmtNum + cmtNum);
 				statistician.increaseInfoNum();
 				statistician.decreaseToModerateNum();
-				categoryService.updateStatistician(departmentId,
-						category.getId(), statistician);
+				categoryService.updateStatistician(category.getId(),
+						statistician);
 			}
 		} else if (ModerationStatus.REJECTED.equals(status)) {
 			rejectInfo(statistician, info);
@@ -451,8 +442,7 @@ public class ModerationServiceImpl extends GenericService implements
 
 		Category category = info.getCategory();
 		statistician.decreaseToModerateNum();
-		categoryService.updateStatistician(category.getDepartment().getId(),
-				category.getId(), statistician);
+		categoryService.updateStatistician(category.getId(), statistician);
 	}
 
 	private void increaseUserMsgStatistician(AbstractInfo info) {
@@ -496,7 +486,6 @@ public class ModerationServiceImpl extends GenericService implements
 		int categoryId = category.getId();
 		CategoryStatistician categoryStatistician = category.getStatistician();
 		Department department = category.getDepartment();
-		int departmentId = department.getId();
 		State state = cmt.getState();
 		if (ModerationStatus.APPROVED.equals(status)) {
 			state.setPending(false);
@@ -513,15 +502,15 @@ public class ModerationServiceImpl extends GenericService implements
 				categoryStatistician.decreaseToModerateNum();
 
 			categoryStatistician.increaseCommentNum();
-			categoryService.updateStatistician(departmentId, categoryId,
-					categoryStatistician);
+			categoryService
+					.updateStatistician(categoryId, categoryStatistician);
 		} else if (ModerationStatus.REJECTED.equals(status)) {
 			state.setDeprecated(true);
 			state.setPending(false);
 			updateCommentState(cmt, state);
 			categoryStatistician.decreaseToModerateNum();
-			categoryService.updateStatistician(departmentId, categoryId,
-					categoryStatistician);
+			categoryService
+					.updateStatistician(categoryId, categoryStatistician);
 		}
 	}
 
@@ -531,7 +520,6 @@ public class ModerationServiceImpl extends GenericService implements
 		int categoryId = category.getId();
 		CategoryStatistician categoryStatistician = category.getStatistician();
 		Department department = category.getDepartment();
-		int departmentId = department.getId();
 		State state = cmt.getState();
 		if (ModerationStatus.APPROVED.equals(status)) {
 			state.setPending(false);
@@ -549,7 +537,7 @@ public class ModerationServiceImpl extends GenericService implements
 
 				categoryStatistician.decreaseToModerateNum();
 				categoryStatistician.increaseCommentNum();
-				categoryService.updateStatistician(departmentId, categoryId,
+				categoryService.updateStatistician(categoryId,
 						categoryStatistician);
 			}
 		} else if (ModerationStatus.REJECTED.equals(status)) {
@@ -557,8 +545,8 @@ public class ModerationServiceImpl extends GenericService implements
 			state.setPending(false);
 			updateCommentState(cmt, state);
 			categoryStatistician.decreaseToModerateNum();
-			categoryService.updateStatistician(departmentId, categoryId,
-					categoryStatistician);
+			categoryService
+					.updateStatistician(categoryId, categoryStatistician);
 		}
 	}
 
@@ -584,7 +572,6 @@ public class ModerationServiceImpl extends GenericService implements
 		if (department.isModerated() || category.isModerated()
 				|| info.isModerated()) {
 			int categoryId = category.getId();
-			int departmentId = department.getId();
 			CategoryStatistician categoryStatistician = category
 					.getStatistician();
 			categoryStatistician.increaseToModerateNum();
@@ -598,8 +585,8 @@ public class ModerationServiceImpl extends GenericService implements
 				updateLatestComment(cmt, info);
 				decreaseUserMsgStatisticianNum(cmt);
 			}
-			categoryService.updateStatistician(departmentId, categoryId,
-					categoryStatistician);
+			categoryService
+					.updateStatistician(categoryId, categoryStatistician);
 			return addLog(cmt, ModerationStatus.DEFERRED, categoryId);
 		} else {
 			if (fromModification)
@@ -706,8 +693,8 @@ public class ModerationServiceImpl extends GenericService implements
 		cmtNum -= infoStatistic.getCommentNum();
 		categoryStatistic.setCommentNum(cmtNum);
 		CategoryService categoryService = new CategoryServiceImpl();
-		categoryService.updateStatistician(oldCategory.getDepartment().getId(),
-				oldCategory.getId(), categoryStatistic);
+		categoryService.updateStatistician(oldCategory.getId(),
+				categoryStatistic);
 
 		CategoryDAO categoryDao = manager.getCategoryDAO();
 		Category newCategory = categoryDao.getCategoryById(newCategoryId);
@@ -716,8 +703,8 @@ public class ModerationServiceImpl extends GenericService implements
 		cmtNum = categoryStatistic.getCommentNum();
 		cmtNum += infoStatistic.getCommentNum();
 		categoryStatistic.setCommentNum(cmtNum);
-		categoryService.updateStatistician(newCategory.getDepartment().getId(),
-				newCategory.getId(), categoryStatistic);
+		categoryService.updateStatistician(newCategory.getId(),
+				categoryStatistic);
 
 		info.setCategory(newCategory);
 		infoDao.updateInfo(info);

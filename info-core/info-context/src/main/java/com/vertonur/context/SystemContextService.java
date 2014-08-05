@@ -26,7 +26,6 @@ import com.vertonur.dao.api.UserDAO;
 import com.vertonur.dao.hibernate.manager.HibernateDAOManager;
 import com.vertonur.dao.manager.DAOManager;
 import com.vertonur.dao.util.PojoUtil;
-import com.vertonur.dms.CacheService;
 import com.vertonur.dms.CategoryService;
 import com.vertonur.dms.ExtendedBeanService;
 import com.vertonur.dms.GroupService;
@@ -133,7 +132,6 @@ public class SystemContextService {
 		SessionManager.shutdown();
 		PojoUtil.destroy();
 		ModeratorManager.destroy();
-		CacheService.destroy();
 	}
 
 	public synchronized static SystemContextService init() throws Exception {
@@ -602,7 +600,7 @@ public class SystemContextService {
 			return peakOnlineUserDate;
 		}
 
-		public int getSystemCommentNum() {
+		public long getSystemCommentNum() {
 			CategoryService categoryService = getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
 			return categoryService.getCategoriesCmtNum();
 		}

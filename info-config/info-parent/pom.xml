@@ -9,6 +9,7 @@
 
 	<properties>
 		<projects.version>0.9.4</projects.version>
+		<spring.version>3.1.4.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -96,6 +97,60 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.10</version>
@@ -144,8 +199,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -113,7 +113,7 @@ public class AttachmentServiceTest {
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		InfoService infoService = (InfoService) service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId);
+		Info info = infoService.getInfoById(infoId);
 		attachmentService.confirmEmbeddedImageUpload(info, id);
 		service.commitTransaction();
 
@@ -160,7 +160,7 @@ public class AttachmentServiceTest {
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		InfoService infoService = (InfoService) service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId);
+		Info info = infoService.getInfoById(infoId);
 		attachmentService.confirmEmbeddedImageUpload(info, id);
 		service.commitTransaction();
 
@@ -272,7 +272,7 @@ public class AttachmentServiceTest {
 		int categoryId = saver.getCategoryId();
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId);
+		Info info = infoService.getInfoById(infoId);
 		assertEquals(0, info.getAttachments().size());
 
 		id = saver.getAttachmentId();

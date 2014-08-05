@@ -150,7 +150,7 @@ public class DataGenerator {
 	public Category getCategory() {
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		return categoryService.getCategoryById(deptId, categoryId, false);
+		return categoryService.getCategoryById(categoryId);
 	}
 
 	public void addNightGroups() {
@@ -180,7 +180,7 @@ public class DataGenerator {
 	public Info getInfo() {
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId, false);
+		Info info = infoService.getInfoById(infoId);
 
 		return info;
 	}
@@ -358,7 +358,7 @@ public class DataGenerator {
 		User user = getInfoUser();
 		CategoryService categoryService = (CategoryService) service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(deptId, categoryId);
+		Category category = categoryService.getCategoryById(categoryId);
 
 		ModerationService moderationService = (ModerationService) service
 				.getDataManagementService(ServiceEnum.MODERATION_SERVICE);
@@ -382,7 +382,7 @@ public class DataGenerator {
 		User user = getInfoUser();
 		CategoryService categoryService = (CategoryService) service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(deptId, categoryId);
+		Category category = categoryService.getCategoryById(categoryId);
 
 		ModerationService moderationService = (ModerationService) service
 				.getDataManagementService(ServiceEnum.MODERATION_SERVICE);
@@ -407,7 +407,7 @@ public class DataGenerator {
 		User user = getInfoUser();
 		CategoryService categoryService = (CategoryService) service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(deptId, categoryId);
+		Category category = categoryService.getCategoryById(categoryId);
 
 		ModerationService moderationService = (ModerationService) service
 				.getDataManagementService(ServiceEnum.MODERATION_SERVICE);
@@ -432,7 +432,7 @@ public class DataGenerator {
 		User user = getInfoUser();
 		CategoryService categoryService = (CategoryService) service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(deptId, categoryId);
+		Category category = categoryService.getCategoryById(categoryId);
 
 		ModerationService moderationService = (ModerationService) service
 				.getDataManagementService(ServiceEnum.MODERATION_SERVICE);
@@ -475,7 +475,7 @@ public class DataGenerator {
 	public int addComment(User user) throws SavingCommentToLockedInfoException {
 		InfoService infoService = (InfoService) service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId, false);
+		Info info = infoService.getInfoById(infoId);
 		Comment cmt = CommonDataGenerator.generateComment(user, info);
 
 		ModerationService moderationService = (ModerationService) service
@@ -596,7 +596,7 @@ public class DataGenerator {
 	public void addAttachment(int num) {
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId);
+		Info info = infoService.getInfoById(infoId);
 		AttachmentService attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		for (int i = 0; i < num; i++) {
@@ -621,19 +621,18 @@ public class DataGenerator {
 	}
 
 	public void addEmbeddedImageAttachment() throws URISyntaxException {
-		uploadAttachment( true, true);
+		uploadAttachment(true, true);
 	}
 
-
 	public void addImageAttachment() throws URISyntaxException {
-		uploadAttachment( true, false);
+		uploadAttachment(true, false);
 	}
 
 	private void uploadAttachment(boolean isImage, boolean isEmbedded)
 			throws URISyntaxException {
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(categoryId, infoId);
+		Info info = infoService.getInfoById(infoId);
 		AttachmentService attachmentService = service
 				.getDataManagementService(ServiceEnum.ATTACHMENT_SERVICE);
 		File file;

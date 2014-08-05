@@ -28,30 +28,7 @@ public interface InfoService {
 
 	public List<Info> getInfosByTitle(String infoTitle);
 
-	/**
-	 * Get info from cache, the info is got from dao if it is not cached
-	 * 
-	 * @param categoryId
-	 * @param infoId
-	 * @return
-	 */
-	public Info getInfoById(int categoryId, int infoId);
-
-	/**
-	 * Used to simply get a cached info or get one from dao if it's not cached.<br>
-	 * To get an info that under session control, which is used to associate a
-	 * new comment or category, in this case,<br>
-	 * this info is gotten from database as it's indicated by useCache with<br>
-	 * value false.After getting this info from db, it's checked against<br>
-	 * InfoCache to see if it has a cached one, and the cached one will be<br>
-	 * replaced with the new one if it exist.
-	 * 
-	 * @param categoryId
-	 * @param infoId
-	 * @param useCache
-	 * @return
-	 */
-	public Info getInfoById(int categoryId, int infoId, boolean useCache);
+	public Info getInfoById(int infoId);
 
 	public List<Info> getHottestInfosByCategory(int userId, int categoryId);
 
@@ -121,6 +98,8 @@ public interface InfoService {
 	public List<PrivateMessage> getPrivateMsgsByReceiver(User user, int start);
 
 	public long getPrivateMsgNumByReceiver(User user);
+
+	public long getPrivateMsgNumByAuthor(User user);
 
 	public List<PrivateMessage> getPrivateMsgsByAuthor(User user, int start);
 

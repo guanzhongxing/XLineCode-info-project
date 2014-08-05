@@ -12,9 +12,7 @@ import com.vertonur.pojo.statistician.CategoryStatistician;
 
 public interface CategoryService {
 
-	public Category getCategoryById(int deptId, int categoryId);
-
-	public Category getCategoryById(int deptId, int categoryId, boolean useCache);
+	public Category getCategoryById(int categoryId);
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
 	public boolean deleteCategory(Category category);
@@ -49,7 +47,7 @@ public interface CategoryService {
 	 *            category statistician
 	 */
 	@RolesAllowed({ RoleEnum.ROLE_USER, RoleEnum.ROLE_GUEST })
-	public void updateStatistician(int deptId, int categoryId,
+	public void updateStatistician(int categoryId,
 			CategoryStatistician statistician);
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
@@ -62,7 +60,7 @@ public interface CategoryService {
 	/**
 	 * Get the overall comment num of the system.
 	 */
-	public int getCategoriesCmtNum();
+	public long getCategoriesCmtNum();
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
 	public void changeDepartment(int deptId, Category category);

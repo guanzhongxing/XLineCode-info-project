@@ -364,7 +364,8 @@ public class BackendPermissionTest {
 
 	@Test(expected = InsufficientPermissionException.class)
 	public void testUpdateDepartmentWithoutPermission()
-			throws DeptModerationListNotEmptyException, CategoryModerationListNotEmptyException {
+			throws DeptModerationListNotEmptyException,
+			CategoryModerationListNotEmptyException {
 		service.beginTransaction();
 		saver.addDepartment(false);
 		service.commitTransaction();
@@ -423,8 +424,7 @@ public class BackendPermissionTest {
 		int id = saver.getCategoryId();
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(saver.getDeptId(),
-				id, false);
+		Category category = categoryService.getCategoryById(id);
 		category.setName("modified");
 		categoryService.updateCategory(category);
 		service.commitTransaction();
@@ -443,8 +443,7 @@ public class BackendPermissionTest {
 		int id = saver.getCategoryId();
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(saver.getDeptId(),
-				id, false);
+		Category category = categoryService.getCategoryById(id);
 		categoryService.deleteCategory(category);
 		service.commitTransaction();
 	}

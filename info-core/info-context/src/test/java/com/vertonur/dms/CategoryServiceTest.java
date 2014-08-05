@@ -50,8 +50,7 @@ public class CategoryServiceTest {
 		int id = saver.getCategoryId();
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(saver.getDeptId(),
-				id,false);
+		Category category = categoryService.getCategoryById(id);
 		category.setName("modified");
 		categoryService.updateCategory(category);
 		service.commitTransaction();
@@ -69,8 +68,8 @@ public class CategoryServiceTest {
 		int id = saver.getCategoryId();
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category = categoryService.getCategoryById(saver.getDeptId(),
-				id,false);
+		Category category = categoryService.getCategoryById(
+				id);
 		categoryService.deleteCategory(category);
 		service.commitTransaction();
 	}

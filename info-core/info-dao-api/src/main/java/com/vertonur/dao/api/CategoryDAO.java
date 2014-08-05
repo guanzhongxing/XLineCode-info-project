@@ -17,4 +17,6 @@ public interface CategoryDAO extends GenericDAO<Category, Integer> {
 	Integer saveCategory(Category category);
 
 	boolean deleteCategory(Category category);
+	
+	long getCategoriesCmtNum();
 }

@@ -60,11 +60,7 @@ public class InfoServiceImpl extends GenericService implements InfoService {
 		return infoDao.getInfosByTitle(infoTitle);
 	}
 
-	public Info getInfoById(int categoryId, int infoId) {
-		return getInfoById(categoryId, infoId, true);
-	}
-
-	public Info getInfoById(int categoryId, int infoId, boolean useCache) {
+	public Info getInfoById(int infoId) {
 		return infoDao.getInfoById(infoId);
 	}
 
@@ -266,5 +262,10 @@ public class InfoServiceImpl extends GenericService implements InfoService {
 	@Override
 	public List<Info> getSystemAnnouncements() {
 		return infoDao.getSystemAnnouncements();
+	}
+
+	@Override
+	public long getPrivateMsgNumByAuthor(User user) {
+		return pmDao.getPrivateMsgNumByAuthor(user);
 	}
 }

@@ -5,8 +5,6 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 
 import com.vertonur.dao.api.DepartmentDAO;
-import com.vertonur.dms.cache.CategoryCache;
-import com.vertonur.dms.cache.DepartmentCache;
 import com.vertonur.dms.constant.RoleEnum;
 import com.vertonur.dms.exception.CategoryModerationListNotEmptyException;
 import com.vertonur.dms.exception.DeptModerationListNotEmptyException;
@@ -17,50 +15,26 @@ public class DepartmentServiceImpl extends GenericService implements
 		DepartmentService {
 
 	private DepartmentDAO departmentDao;
-	private DepartmentCache cache;
 
 	protected DepartmentServiceImpl() {
 		super();
 		departmentDao = manager.getDepartmentDAO();
-		CacheService service = CacheService.getCacheService();
-		cache = service.getDepartmentCache();
 	}
 
 	public Integer saveDepartment(Department department) {
-		int id = departmentDao.saveDepartment(department);
-		cache.reloadDepartments(departmentDao);
-		return id;
+		return departmentDao.saveDepartment(department);
 	}
 
 	public Department getDepartmentById(int id) {
-		return getDepartmentById(id, true);
-	}
-
-	public Department getDepartmentById(int id, boolean useCache) {
-		Department department = null;
-		if (useCache)
-			department = cache.getDepartment(id);
-		else
-			department = departmentDao.getDepartmentById(id);
-		return department;
+		return departmentDao.getDepartmentById(id);
 	}
 
 	public List<Department> getDepartments() {
-		List<Department> departList = cache.getDepartments();
-		boolean isEmpty = departList.isEmpty();
-		if (isEmpty) {
-			departList = departmentDao.getDepartments();
-			for (Department department : departList) {
-				cache.addDepartment(department);
-			}
-		}
-
-		return departList;
+		return departmentDao.getDepartments();
 	}
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
 	public boolean deleteDepartment(Department department) {
-		cache.removeDepartment(department.getId());
 		return departmentDao.deleteDepartment(department);
 	}
 
@@ -88,15 +62,8 @@ public class DepartmentServiceImpl extends GenericService implements
 		}
 
 		departmentDao.updateDepartment(department);
-		if (department.isDeprecated()) {
+		if (department.isDeprecated())
 			// TODO:remove infos of categories
 			categoryService.deleteCategories(id);
-			cache.removeDepartment(id);
-		} else {
-			cache.reloadDepartments(departmentDao);
-			CategoryCache categoryCache = CacheService.getCacheService()
-					.getCategoryCache();
-			categoryCache.reloadCategories(id, manager.getCategoryDAO());
-		}
 	}
 }

@@ -107,8 +107,7 @@ public class ServicePermissionTest {
 		saver.addDepartmentAndCategory();
 		CategoryService categoryService = (CategoryService) service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		categoryService.getCategoryById(saver.getDeptId(),
-				saver.getCategoryId());
+		categoryService.getCategoryById(saver.getCategoryId());
 		service.commitTransaction();
 	}
 

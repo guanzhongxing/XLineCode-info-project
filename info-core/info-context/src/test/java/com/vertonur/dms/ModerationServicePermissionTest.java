@@ -76,8 +76,7 @@ public class ModerationServicePermissionTest {
 		service.beginTransaction();
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId());
+		Info info = infoService.getInfoById(saver.getInfoId());
 		String modifiedContent = "modified test";
 		String content = info.getContent();
 		String reason = "test";

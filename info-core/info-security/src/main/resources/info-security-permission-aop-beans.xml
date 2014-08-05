@@ -359,7 +359,6 @@
 				<ref bean="readCategoryPermissionTemplate" />
 			</set>
 		</property>
-		<property name="paramIndex" value="1" />
 	</bean>
 
 	<bean id="validateReadCategoryPermissionAdvice"

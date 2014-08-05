@@ -133,8 +133,7 @@ public class InfoServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(true, info.isLocked());
 		service.commitTransaction();
 	}
@@ -172,8 +171,7 @@ public class InfoServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(false, info.isLocked());
 		service.commitTransaction();
 	}
@@ -329,15 +327,14 @@ public class InfoServiceTest {
 		service.beginTransaction();
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		List<Info> announcements = infoService
-				.getDeptAnnouncements(deptId1);
+		List<Info> announcements = infoService.getDeptAnnouncements(deptId1);
 		assertEquals(4, announcements.size());
 
 		announcements = infoService.getDeptAnnouncements(deptId2);
 		assertEquals(3, announcements.size());
 		service.commitTransaction();
 	}
-	
+
 	@Test
 	public void testGetSystemAnnouncements() throws LoginException {
 		service.beginTransaction();
@@ -363,8 +360,7 @@ public class InfoServiceTest {
 		service.beginTransaction();
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		List<Info> announcements = infoService
-				.getSystemAnnouncements();
+		List<Info> announcements = infoService.getSystemAnnouncements();
 		assertEquals(7, announcements.size());
 
 		announcements = infoService.getDeptAnnouncements(deptId1);

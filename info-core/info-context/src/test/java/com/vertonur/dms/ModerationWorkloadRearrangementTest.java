@@ -671,15 +671,15 @@ public class ModerationWorkloadRearrangementTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(category1, info1, false);
+		Info info = infoService.getInfoById(info1);
 		saver.addCmts(info, 10);
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(category2, info2, false);
+		info = infoService.getInfoById(info2);
 		saver.addCmts(info, 10);
 
-		info = infoService.getInfoById(category3, info3, false);
+		info = infoService.getInfoById(info3);
 		saver.addCmts(info, 10);
 		service.commitTransaction();
 

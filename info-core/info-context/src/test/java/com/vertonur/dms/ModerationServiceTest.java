@@ -157,8 +157,7 @@ public class ModerationServiceTest {
 		saver.loginUser(moderatorId + "", moderatorPwd);
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId());
+		Info info = infoService.getInfoById(saver.getInfoId());
 		String modifiedContent = "modified test";
 		String content = info.getContent();
 		String reason = "test";
@@ -182,12 +181,10 @@ public class ModerationServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(modifiedContent, info.getContent());
 
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(modifiedContent, info.getContent());
 		service.commitTransaction();
 
@@ -203,8 +200,7 @@ public class ModerationServiceTest {
 		saver.loginUser(moderatorId + "", moderatorPwd);
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		modifiedContent = "modified test2";
 		content = info.getContent();
 		reason = "test2";
@@ -227,12 +223,10 @@ public class ModerationServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(modifiedContent, info.getContent());
 
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(modifiedContent, info.getContent());
 		service.commitTransaction();
 	}
@@ -376,7 +370,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(), infoId);
+		info = infoService.getInfoById(infoId);
 		assertEquals(false, info.getStatistician().isLatestOne());
 
 		info = saver.getInfo();
@@ -411,16 +405,14 @@ public class ModerationServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(), infoId);
+		info = infoService.getInfoById(infoId);
 		assertEquals(true, info.getStatistician().isLatestOne());
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		user = saver.getInfoUser();
@@ -538,8 +530,7 @@ public class ModerationServiceTest {
 		service.beginTransaction();
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		Info info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId());
+		Info info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		info = saver.getInfo();
@@ -635,8 +626,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -670,8 +660,7 @@ public class ModerationServiceTest {
 		assertEquals(saver.getInfoId(), info.getId());
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(saver.getInfoId(), info.getId());
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -701,8 +690,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -734,8 +722,7 @@ public class ModerationServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 		service.commitTransaction();
 
@@ -793,8 +780,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -834,8 +820,7 @@ public class ModerationServiceTest {
 		assertEquals(null, info);
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info);
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -1269,8 +1254,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(saver.getInfoId(), info.getId());
 		assertEquals(modifiedContent, info.getContent());
 
@@ -1311,8 +1295,7 @@ public class ModerationServiceTest {
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(null, info, info);
 
 		saver.checkModeratorCategoryDigestingNum(saver.getAdmin().getId(),
@@ -1362,8 +1345,7 @@ public class ModerationServiceTest {
 
 		infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService
-				.getInfoById(saver.getCategoryId(), saver.getInfoId());
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(saver.getInfoId(), info.getId());
 		assertEquals(modifiedContent, info.getContent());
 
@@ -1600,13 +1582,13 @@ public class ModerationServiceTest {
 		long num = moderationService.getLogNum(saver.getAdminId(),
 				ModerationStatus.UNLOCKED);
 		assertEquals(1, num);
-		
+
 		Info info = saver.getInfo();
 		assertEquals(false, info.isLocked());
-		
+
 		InfoService infoService = service
-		.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(), saver.getInfoId(),false);
+				.getDataManagementService(ServiceEnum.INFO_SERVICE);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(false, info.isLocked());
 		service.commitTransaction();
 	}
@@ -1645,14 +1627,13 @@ public class ModerationServiceTest {
 		long num = moderationService.getLogNum(saver.getAdminId(),
 				ModerationStatus.LOCKED);
 		assertEquals(1, num);
-		
+
 		Info info = saver.getInfo();
 		assertEquals(true, info.isLocked());
 
 		InfoService infoService = service
 				.getDataManagementService(ServiceEnum.INFO_SERVICE);
-		info = infoService.getInfoById(saver.getCategoryId(),
-				saver.getInfoId(), false);
+		info = infoService.getInfoById(saver.getInfoId());
 		assertEquals(true, info.isLocked());
 		service.commitTransaction();
 	}
@@ -1665,7 +1646,6 @@ public class ModerationServiceTest {
 		service.beginTransaction();
 		saver.loginAdmin();
 		saver.addDepartmentAndCategory();
-		int deptId = saver.getDeptId();
 		int categoryId = saver.getCategoryId();
 		int categoryId2 = saver.addCategory();
 		service.commitTransaction();
@@ -1697,24 +1677,22 @@ public class ModerationServiceTest {
 
 		CategoryService categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		Category category1 = categoryService
-				.getCategoryById(deptId, categoryId);
+		Category category1 = categoryService.getCategoryById(categoryId);
 		CategoryStatistician statistician = category1.getStatistician();
 		assertEquals(0, statistician.getInfoNum());
 		assertEquals(0, statistician.getCommentNum());
 
-		Category category2 = categoryService.getCategoryById(deptId,
-				categoryId2);
+		Category category2 = categoryService.getCategoryById(categoryId2);
 		statistician = category2.getStatistician();
 		assertEquals(3, statistician.getInfoNum());
 		assertEquals(10, statistician.getCommentNum());
 
-		category1 = categoryService.getCategoryById(deptId, categoryId, false);
+		category1 = categoryService.getCategoryById(categoryId);
 		statistician = category1.getStatistician();
 		assertEquals(0, statistician.getInfoNum());
 		assertEquals(0, statistician.getCommentNum());
 
-		category2 = categoryService.getCategoryById(deptId, categoryId2, false);
+		category2 = categoryService.getCategoryById(categoryId2);
 		statistician = category2.getStatistician();
 		assertEquals(3, statistician.getInfoNum());
 		assertEquals(10, statistician.getCommentNum());
@@ -1734,22 +1712,22 @@ public class ModerationServiceTest {
 
 		categoryService = service
 				.getDataManagementService(ServiceEnum.CATEGORY_SERVICE);
-		category1 = categoryService.getCategoryById(deptId, categoryId);
+		category1 = categoryService.getCategoryById(categoryId);
 		statistician = category1.getStatistician();
 		assertEquals(1, statistician.getInfoNum());
 		assertEquals(10, statistician.getCommentNum());
 
-		category2 = categoryService.getCategoryById(deptId, categoryId2);
+		category2 = categoryService.getCategoryById(categoryId2);
 		statistician = category2.getStatistician();
 		assertEquals(2, statistician.getInfoNum());
 		assertEquals(0, statistician.getCommentNum());
 
-		category1 = categoryService.getCategoryById(deptId, categoryId, false);
+		category1 = categoryService.getCategoryById(categoryId);
 		statistician = category1.getStatistician();
 		assertEquals(1, statistician.getInfoNum());
 		assertEquals(10, statistician.getCommentNum());
 
-		category2 = categoryService.getCategoryById(deptId, categoryId2, false);
+		category2 = categoryService.getCategoryById(categoryId2);
 		statistician = category2.getStatistician();
 		assertEquals(2, statistician.getInfoNum());
 		assertEquals(0, statistician.getCommentNum());

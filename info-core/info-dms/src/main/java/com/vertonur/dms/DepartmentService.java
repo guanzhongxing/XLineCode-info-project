@@ -16,8 +16,6 @@ public interface DepartmentService {
 
 	public Department getDepartmentById(int id);
 
-	public Department getDepartmentById(int id, boolean useCache);
-
 	public List<Department> getDepartments();
 
 	@RolesAllowed(RoleEnum.ROLE_ADMIN)
