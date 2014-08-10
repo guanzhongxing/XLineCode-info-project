@@ -20,6 +20,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.vertonur.pojo.security.Group;
 import com.vertonur.pojo.statistician.UserMsgStatistician;
@@ -32,11 +34,16 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
+
+	@Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters long.")
 	private String name;
+	@Size(min = 6, max = 20, message = "The password must be between 6 and 20 characters long.")
 	private String password;
 	private Attachment avatar;
 	private int gender;
+	@Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", message = "error.form.email.invalid")
 	private String email;
+	@Size(max = 255, message = "The signature must be in 255 characters long.")
 	private String signature;
 	private Date regTime;
 	private Date lastLoginDate;
@@ -47,8 +54,11 @@ public class User implements Serializable {
 
 	private String qq;
 	private String msn;
+	@Size(max = 255, message = "The webSite must be in 255 characters long.")
 	private String webSite;
+	@Size(max = 255, message = "The interests must be in 255 characters long.")
 	private String interests;
+	@Size(max = 255, message = "The location must be in 255 characters long.")
 	private String location;
 
 	private UserPreferences userPres;
@@ -56,8 +66,6 @@ public class User implements Serializable {
 
 	private UserMsgStatistician statistician;
 
-	private Set<AbstractInfo> comments = new HashSet<AbstractInfo>();
-	private Set<AbstractInfo> infos = new HashSet<AbstractInfo>();
 	private Set<Group> groups = new HashSet<Group>();
 
 	public User() {
@@ -230,28 +238,6 @@ public class User implements Serializable {
 
 	public void setStatistician(UserMsgStatistician statistician) {
 		this.statistician = statistician;
-	}
-
-	@OneToMany(mappedBy = "author")
-	public Set<AbstractInfo> getComments() {
-		return comments;
-	}
-
-	public void setComments(Set<AbstractInfo> comments) {
-		this.comments = comments;
-	}
-
-	@OneToMany(mappedBy = "author")
-	public Set<AbstractInfo> getInfos() {
-		return infos;
-	}
-
-	public void setInfos(Set<AbstractInfo> infos) {
-		this.infos = infos;
-	}
-
-	public void removeInfo(Info info) {
-		infos.remove(info);
 	}
 
 	@Column(name = "USR_IS_LOCKED")
