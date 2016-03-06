@@ -20,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -34,16 +35,15 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
-
-	@Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters long.")
+	@Size(min = 1, max = 20, message = "{length.range}")
 	private String name;
-	@Size(min = 6, max = 20, message = "The password must be between 6 and 20 characters long.")
+	@Size(min = 5, max = 255, message = "{length.range}")
 	private String password;
 	private Attachment avatar;
 	private int gender;
-	@Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", message = "error.form.email.invalid")
+	@Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", message = "{email.format.invalid}")
 	private String email;
-	@Size(max = 255, message = "The signature must be in 255 characters long.")
+	@Size(min = 6, max = 255, message = "{length.range}")
 	private String signature;
 	private Date regTime;
 	private Date lastLoginDate;

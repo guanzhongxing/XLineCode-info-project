@@ -16,6 +16,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
 
 @Entity(name = "INFO_COR_ABBR_INFO")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -27,7 +28,9 @@ public abstract class AbstractInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
+	@Size(min = 5, max = 80, message = "{length.range}")
 	private String subject;
+	@Size(min = 5, max = 40000, message = "{length.range}")
 	private String content;
 	private Date createdTime;
 

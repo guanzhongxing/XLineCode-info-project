@@ -11,6 +11,7 @@
 		<projects.version>0.9.4</projects.version>
 		<spring.version>3.1.4.RELEASE</spring.version>
 		<hibernate.version>3.5.6-Final</hibernate.version>
+		<hibernate.validator.version>4.3.0.Final</hibernate.validator.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -113,7 +114,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>4.1.0.Final</version>
+				<version>${hibernate.validator.version}</version>
 			</dependency>
 			<!-- hibernate related -->
 

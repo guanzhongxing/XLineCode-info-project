@@ -4,18 +4,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity(name = "INFO_COR_EML_CNG")
-public class EmailConfig implements Config{
+public class EmailConfig implements Config {
 
 	private int id;
+	@Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", message = "{email.format.invalid}")
 	private String sender;
+	@NotNull(message = "{not.null}")
 	private String smtpHost;
 	private int smtpPort;
 	private int smtpSSLPort;
 	private boolean requireAuth;
 	private boolean requireSSL;
+	@NotNull(message = "{not.null}")
 	private String smtpUsername;
+	@NotNull(message = "{not.null}")
 	private String smtpPwd;
 	private String emailFormat;
 

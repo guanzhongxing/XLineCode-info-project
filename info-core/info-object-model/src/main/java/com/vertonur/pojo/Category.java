@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 import com.vertonur.pojo.statistician.CategoryStatistician;
 
@@ -26,7 +27,9 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
+	@Size(min = 1, max = 20, message = "{length.range}")
 	private String name;
+	@Size(min = 10, max = 100, message = "{length.range}")
 	private String description;
 	private Date createdTime;
 	private Admin creator;

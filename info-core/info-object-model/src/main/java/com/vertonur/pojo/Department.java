@@ -13,13 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Size;
 
 @Entity(name = "INFO_COR_DEPT")
 public class Department implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int id;
+	@Size(min = 1, max = 30, message = "{length.range}")
 	private String name;
+	@Size(min = 10, max = 100, message = "{length.range}")
 	private String description;
 	private Date createdTime;
 	private Admin creator;

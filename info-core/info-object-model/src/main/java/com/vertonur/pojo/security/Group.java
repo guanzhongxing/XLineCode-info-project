@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.vertonur.pojo.User;
 
@@ -24,8 +26,11 @@ public class Group {
 	}
 
 	private int id;
+	@Size(min = 1, max = 20, message = "{length.range}")
 	private String name;
+	@Size(min = 1, max = 255, message = "{length.range}")
 	private String description;
+	@NotNull
 	private GroupType groupType;
 	private int nestedLevel;
 	private boolean deprecated = false;
